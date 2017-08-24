@@ -13,9 +13,19 @@ type (
 	ClientConnector interface {
 		Connect(w http.ResponseWriter) Socket
 	}
+)
+
+type (
+	Dialer interface {
+		Dial(string) Socket
+	}
 
 	ServerConnector interface {
 		Connect(Socket, string) Proxy
+	}
+
+	Initializer interface {
+		Initialize(Socket, Socket) bool
 	}
 
 	Proxy interface {
@@ -23,11 +33,11 @@ type (
 	}
 )
 
-
 type (
 	Socket interface {
 		io.ReadWriteCloser
 	}
+
 	TCPSocket interface {
 		Socket
 		CloseRead() error
