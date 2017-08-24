@@ -1,11 +1,12 @@
 package cproxy
 
 import (
-	"testing"
 	"bytes"
+	"net"
+	"testing"
 
-	"github.com/smartystreets/gunit"
 	"github.com/smartystreets/assertions/should"
+	"github.com/smartystreets/gunit"
 )
 
 func TestProxyFixture(t *testing.T) {
@@ -53,6 +54,8 @@ type TestSocket struct {
 	closeRead   int
 	closeWrite  int
 	close       int
+	address     string
+	port        int
 }
 
 func NewTestSocket() *TestSocket {
@@ -90,4 +93,11 @@ func (this *TestSocket) Write(value []byte) (int, error) {
 		panic("Can't write to closed socket")
 	}
 	return this.writeBuffer.Write(value)
+}
+
+func (this *TestSocket) RemoteAddr() net.Addr {
+	return &net.TCPAddr{
+		IP:   net.ParseIP(this.address),
+		Port: this.port,
+	}
 }

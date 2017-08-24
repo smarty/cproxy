@@ -1,6 +1,7 @@
 package cproxy
 
 import (
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -175,4 +176,9 @@ func (this *DummySocket) Close() error {
 	this.closed++
 	return nil
 }
+
+func (this *DummySocket) RemoteAddr() net.Addr {
+	panic("shouldn't be called")
+}
+
 func (this *DummySocket) String() string { return string(this.written) }

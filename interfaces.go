@@ -2,6 +2,7 @@ package cproxy
 
 import (
 	"io"
+	"net"
 	"net/http"
 )
 
@@ -36,6 +37,7 @@ type (
 type (
 	Socket interface {
 		io.ReadWriteCloser
+		RemoteAddr() net.Addr
 	}
 
 	TCPSocket interface {
