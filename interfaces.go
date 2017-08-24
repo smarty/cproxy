@@ -21,8 +21,16 @@ type (
 	Proxy interface {
 		Proxy()
 	}
+)
 
+
+type (
 	Socket interface {
-		io.WriteCloser
+		io.ReadWriteCloser
+	}
+	TCPSocket interface {
+		Socket
+		CloseRead() error
+		CloseWrite() error
 	}
 )

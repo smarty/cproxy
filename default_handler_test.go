@@ -163,6 +163,10 @@ type DummySocket struct {
 	closed  int
 }
 
+func (this *DummySocket) Read([]byte) (int, error) {
+	panic("this test shouldn't read")
+}
+
 func (this *DummySocket) Write(buffer []byte) (int, error) {
 	this.written = append(this.written, buffer...)
 	return len(buffer), nil
