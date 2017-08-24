@@ -1,8 +1,6 @@
 package cproxy
 
-import (
-	"net/http"
-)
+import "net/http"
 
 type DefaultHandler struct {
 	filter          Filter
