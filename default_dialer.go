@@ -9,7 +9,11 @@ type DefaultDialer struct {
 	timeout time.Duration
 }
 
-func NewDialer(timeout time.Duration) *DefaultDialer {
+func NewDialer() *DefaultDialer {
+	return NewDialerWithTimeout(time.Second * 10)
+}
+
+func NewDialerWithTimeout(timeout time.Duration) *DefaultDialer {
 	return &DefaultDialer{timeout: timeout}
 }
 
