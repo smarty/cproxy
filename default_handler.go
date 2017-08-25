@@ -6,29 +6,43 @@ type DefaultHandler struct {
 	filter          Filter
 	clientConnector ClientConnector
 	serverConnector ServerConnector
+	meter           Meter
 }
 
-func NewHandler(filter Filter, clientConnector ClientConnector, serverConnector ServerConnector) *DefaultHandler {
+func NewHandler(filter Filter, clientConnector ClientConnector, serverConnector ServerConnector, meter Meter) *DefaultHandler {
 	return &DefaultHandler{
 		filter:          filter,
 		clientConnector: clientConnector,
 		serverConnector: serverConnector,
+		meter:           meter,
 	}
 }
 
 func (this *DefaultHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+	this.meter.Measure(MeasurementHTTPRequest)
+
 	if request.Method != "CONNECT" {
+		this.meter.Measure(MeasurementBadMethod)
 		writeResponseStatus(response, http.StatusMethodNotAllowed)
+
 	} else if !this.filter.IsAuthorized(request) {
+		this.meter.Measure(MeasurementUnauthorizedRequest)
 		writeResponseStatus(response, http.StatusUnauthorized)
+
 	} else if client := this.clientConnector.Connect(response); client == nil {
+		this.meter.Measure(MeasurementClientConnectionFailed)
 		writeResponseStatus(response, http.StatusNotImplemented)
+
 	} else if proxy := this.serverConnector.Connect(client, request.URL.Host); proxy == nil {
+		this.meter.Measure(MeasurementServerConnectionFailed)
 		client.Write(StatusBadGateway)
 		client.Close()
+
 	} else {
+		this.meter.Measure(MeasurementProxyReady)
 		client.Write(StatusReady)
 		proxy.Proxy()
+		this.meter.Measure(MeasurementProxyComplete)
 	}
 }
 

@@ -46,3 +46,17 @@ type (
 		CloseWrite() error
 	}
 )
+
+type Meter interface {
+	Measure(int)
+}
+
+const (
+	MeasurementHTTPRequest int = iota
+	MeasurementBadMethod
+	MeasurementUnauthorizedRequest
+	MeasurementClientConnectionFailed
+	MeasurementServerConnectionFailed
+	MeasurementProxyReady
+	MeasurementProxyComplete
+)

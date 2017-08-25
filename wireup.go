@@ -8,6 +8,7 @@ type Wireup struct {
 	initializer     Initializer
 	clientConnector ClientConnector
 	serverConnector ServerConnector
+	meter           Meter
 }
 
 func Configure() *Wireup {
@@ -37,6 +38,11 @@ func (this *Wireup) WithServerConnector(value ServerConnector) *Wireup {
 	return this
 }
 
+func (this *Wireup) WithMeter(value Meter) *Wireup {
+	this.meter = value
+	return this
+}
+
 func (this *Wireup) Build() http.Handler {
 	filter := this.filter
 	if filter == nil {
@@ -49,7 +55,13 @@ func (this *Wireup) Build() http.Handler {
 	}
 
 	serverConnector := this.buildServerConnector()
-	return NewHandler(filter, clientConnector, serverConnector)
+
+	meter := this.meter
+	if meter == nil {
+		meter = NewMeter()
+	}
+
+	return NewHandler(filter, clientConnector, serverConnector, meter)
 }
 func (this *Wireup) buildServerConnector() ServerConnector {
 	dialer := this.dialer
