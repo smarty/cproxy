@@ -42,12 +42,14 @@ func (this *LoggingInitializerFixture) TestInnerInitializerCalled() {
 	this.So(this.fakeInner.server, should.Equal, this.server)
 }
 
-func (this *LoggingInitializerFixture) SkipTestNoLoggingOnFailure() {
+func (this *LoggingInitializerFixture) TestLoggingOnFailure() {
 	this.fakeInner.success = false
 
 	this.initializer.Initialize(this.client, this.server)
 
-	this.So(this.initializer.logger.Calls, should.Equal, 0)
+	this.So(this.initializer.logger.Calls, should.Equal, 1)
+	this.So(this.initializer.logger.Log.String(), should.EndWith,
+		"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]\n")
 }
 
 func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {

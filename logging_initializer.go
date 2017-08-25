@@ -12,10 +12,13 @@ func NewLoggingInitializer(inner Initializer) *LoggingInitializer {
 }
 
 func (this *LoggingInitializer) Initialize(client, server Socket) bool {
-	if !this.inner.Initialize(client, server) {
-		return false
+	result := this.inner.Initialize(client, server)
+
+	if result {
+		this.logger.Printf("[INFO] Established connection [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
+	} else {
+		this.logger.Printf("[INFO] Connection failed [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
 	}
 
-	this.logger.Printf("[INFO] Established connection [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
-	return true
+	return result
 }
