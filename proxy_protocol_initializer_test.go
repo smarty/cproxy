@@ -40,8 +40,8 @@ func (this *ProxyProtocolInitializerFixture) TestIPv4ProtocolV1() {
 	this.So(this.client.close, should.Equal, 0)
 }
 
-func (this *ProxyProtocolInitializerFixture) SkipTestIPv6ProtocolV1() {
-	this.client.address = "dead:beef:ca1f"
+func (this *ProxyProtocolInitializerFixture) TestIPv6ProtocolV1() {
+	this.client.address = "2001:db8::68"
 	this.client.port = 1234
 	this.server.address = "2.2.2.2"
 	this.server.port = 5678
@@ -49,7 +49,7 @@ func (this *ProxyProtocolInitializerFixture) SkipTestIPv6ProtocolV1() {
 	result := this.initializer.Initialize(this.client, this.server)
 
 	this.So(result, should.BeTrue)
-	this.So(this.server.writeBuffer.String(), should.Equal, "PROXY TCP6 dead:beef:ca1f 2.2.2.2 1234 5678\r\n")
+	this.So(this.server.writeBuffer.String(), should.Equal, "PROXY TCP6 2001:db8::68 2.2.2.2 1234 5678\r\n")
 	this.So(this.client.writeBuffer.String(), should.BeEmpty)
 	this.So(this.server.close, should.Equal, 0)
 	this.So(this.client.close, should.Equal, 0)
