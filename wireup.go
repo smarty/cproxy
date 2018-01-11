@@ -40,41 +40,33 @@ func WithMeter(value Meter) Option {
 	return func(this *Wireup) { this.meter = value }
 }
 
-	filter := this.filter
-	if filter == nil {
-		filter = NewFilter()
 func (this *Wireup) build() http.Handler {
+	if this.filter == nil {
+		this.filter = NewFilter()
 	}
 
-	clientConnector := this.clientConnector
-	if clientConnector == nil {
-		clientConnector = NewClientConnector()
+	if this.clientConnector == nil {
+		this.clientConnector = NewClientConnector()
 	}
 
-	serverConnector := this.buildServerConnector()
-
-	meter := this.meter
-	if meter == nil {
-		meter = NewMeter()
+	if this.meter == nil {
+		this.meter = NewMeter()
 	}
 
-	return NewHandler(filter, clientConnector, serverConnector, meter)
+	return NewHandler(this.filter, this.clientConnector, this.buildServerConnector(), this.meter)
 }
 func (this *Wireup) buildServerConnector() ServerConnector {
-	dialer := this.dialer
-	if dialer == nil {
-		dialer = NewDialer()
+	if this.dialer == nil {
+		this.dialer = NewDialer()
 	}
 
-	initializer := this.initializer
-	if initializer == nil {
-		initializer = NewInitializer()
+	if this.initializer == nil {
+		this.initializer = NewInitializer()
 	}
 
-	serverConnector := this.serverConnector
-	if serverConnector == nil {
-		serverConnector = NewServerConnector(dialer, initializer)
+	if this.serverConnector == nil {
+		this.serverConnector = NewServerConnector(this.dialer, this.initializer)
 	}
 
-	return serverConnector
+	return this.serverConnector
 }
