@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	handler := cproxy.Configure().Build()
+	handler := cproxy.Configure()
 	log.Println("Listening on:", "*:8080")
 	http.ListenAndServe(":8080", handler)
 }

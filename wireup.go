@@ -11,42 +11,39 @@ type Wireup struct {
 	meter           Meter
 }
 
-func Configure() *Wireup {
-	return &Wireup{}
+func Configure(options ...Option) http.Handler {
+	wireup := &Wireup{}
+	for _, option := range options {
+		option(wireup)
+	}
+	return wireup.build()
 }
 
-func (this *Wireup) WithFilter(value Filter) *Wireup {
-	this.filter = value
-	return this
+type Option func(*Wireup)
+
+func WithFilter(value Filter) Option {
+	return func(this *Wireup) { this.filter = value }
+}
+func WithClientConnector(value ClientConnector) Option {
+	return func(this *Wireup) { this.clientConnector = value }
+}
+func WithDialer(value Dialer) Option {
+	return func(this *Wireup) { this.dialer = value }
+}
+func WithInitializer(value Initializer) Option {
+	return func(this *Wireup) { this.initializer = value }
+}
+func WithServerConnector(value ServerConnector) Option {
+	return func(this *Wireup) { this.serverConnector = value }
+}
+func WithMeter(value Meter) Option {
+	return func(this *Wireup) { this.meter = value }
 }
 
-func (this *Wireup) WithClientConnector(value ClientConnector) *Wireup {
-	this.clientConnector = value
-	return this
-}
-
-func (this *Wireup) WithDialer(value Dialer) *Wireup {
-	this.dialer = value
-	return this
-}
-func (this *Wireup) WithInitializer(value Initializer) *Wireup {
-	this.initializer = value
-	return this
-}
-func (this *Wireup) WithServerConnector(value ServerConnector) *Wireup {
-	this.serverConnector = value
-	return this
-}
-
-func (this *Wireup) WithMeter(value Meter) *Wireup {
-	this.meter = value
-	return this
-}
-
-func (this *Wireup) Build() http.Handler {
 	filter := this.filter
 	if filter == nil {
 		filter = NewFilter()
+func (this *Wireup) build() http.Handler {
 	}
 
 	clientConnector := this.clientConnector

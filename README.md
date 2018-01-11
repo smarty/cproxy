@@ -43,7 +43,7 @@ The handler created is a vanilla `http.Handler` that can be attached to a `http.
 If you would like to filter traffic based upon custom conditions, you can create an implementation of the `Filter` interface to fully inspect the HTTP request to determine if, for example, the appropriate headers are present and sufficient to allow the `CONNECT` process to proceed. Additionally, you could inspect the destination host, and/or determine if a username/password/token is present as part of the request. You could even limit traffic to a known set of client IPs. All of that behavior can be created by implementing the `Filter` interface and configuring the handler as follows:
 ```
 filter := &MyCustomFilter{}
-handler := cproxy.Configure().WithFilter(filter).Build()
+handler := cproxy.Configure(WithFilter(filter))
 
 http.ListenAndServe(":8080", handler) // now listen for traffic
 ```

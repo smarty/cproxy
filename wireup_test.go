@@ -28,10 +28,10 @@ func (this *WireupFixture) Setup() {
 	this.serverSocket = NewTestSocket()
 	this.clientConnector = NewTestClientConnector(this.clientSocket)
 	this.dialer = NewTestDialer(this.serverSocket)
-	this.handler = Configure().
-		WithClientConnector(this.clientConnector).
-		WithDialer(this.dialer).
-		Build()
+	this.handler = Configure(
+		WithClientConnector(this.clientConnector),
+		WithDialer(this.dialer),
+	)
 }
 
 func (this *WireupFixture) TestEndToEnd() {
