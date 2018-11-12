@@ -19,7 +19,7 @@ type HostnameFilterFixture struct {
 }
 
 func (this *HostnameFilterFixture) Setup() {
-	this.filter = NewHostnameFilter([]string{"domain:1234", "sub.domain2:5678"})
+	this.filter = NewHostnameFilter([]string{"domain:1234", "sub.domain2:5678", "*.xyz.domain3:9012"})
 }
 
 func (this *HostnameFilterFixture) TestDenied() {
@@ -30,6 +30,8 @@ func (this *HostnameFilterFixture) TestDenied() {
 	this.assertUnauthorized("whatever.domain2:5678")
 	this.assertUnauthorized("whatever.sub.domain2:5678")
 	this.assertUnauthorized("somedomain:1234") // must match exactly
+	this.assertUnauthorized("domain3:1234")
+	this.assertUnauthorized("xyz.domain3:9012")
 }
 
 func (this *HostnameFilterFixture) assertUnauthorized(domain string) {
@@ -40,6 +42,8 @@ func (this *HostnameFilterFixture) assertUnauthorized(domain string) {
 func (this *HostnameFilterFixture) TestAuthorized() {
 	this.assertAuthorized("domain:1234")
 	this.assertAuthorized("sub.domain2:5678")
+	this.assertAuthorized("a.xyz.domain3:9012")
+	this.assertAuthorized("b.xyz.domain3:9012")
 }
 
 func (this *HostnameFilterFixture) assertAuthorized(domain string) {
