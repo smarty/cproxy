@@ -1,6 +1,8 @@
 package cproxy
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type HostnameFilter struct {
 	authorized []string
@@ -14,7 +16,12 @@ func (this HostnameFilter) IsAuthorized(request *http.Request) bool {
 	host := request.URL.Host
 
 	for _, authorized := range this.authorized {
-		if authorized == host {
+		if authorized[:2] == "*." {
+			have, want := len(host), len(authorized) - 1
+			if have > want && authorized[1:] == host[len(host)-want:] {
+				return true
+			}
+		} else if authorized == host {
 			return true
 		}
 	}
