@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/smartystreets/cproxy.svg?branch=master)](https://travis-ci.org/smartystreets/cproxy)
+
 Purpose
 -----------------------
 
@@ -54,7 +56,3 @@ A full, working example ready for compilation and deployment to production envir
 Naming `cproxy`
 ----------------
 Why is it called `cproxy`? It's short for `CONNECT` proxy. The name is meant to express the idea of an explicit, forward `HTTP CONNECT` proxy.
-
-
-----------------
-[![Build Status](https://travis-ci.org/smartystreets/cproxy.svg?branch=master)](https://travis-ci.org/smartystreets/cproxy)
