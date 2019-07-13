@@ -17,7 +17,7 @@ func (this HostnameFilter) IsAuthorized(request *http.Request) bool {
 
 	for _, authorized := range this.authorized {
 		if authorized[:2] == "*." {
-			have, want := len(host), len(authorized) - 1
+			have, want := len(host), len(authorized)-1
 			if have > want && authorized[1:] == host[len(host)-want:] {
 				return true
 			}
