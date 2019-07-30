@@ -39,7 +39,9 @@ handler := cproxy.Configure().Build()
 
 The above snippet configures `cproxy` as a basic `HTTP CONNECT` proxy with no specific abilities. If you would like to append the PROXY Protocol header to oubound traffic (which is the reason why it was written), configure it like so:
 ```
-handler := cproxy.Configure().WithProxyProtocol().Build()
+handler := cproxy.Configure(
+        cproxy.WithInitializer(cproxy.NewProxyProtocolInitializer()),
+    ).Build()
 ```
 
 The handler created is a vanilla `http.Handler` that can be attached to a `http.Server` instance so that it can now receive and proxy traffic.
