@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/smartystreets/cproxy.svg?branch=master)](https://travis-ci.org/smartystreets/cproxy)
+[![Code Coverage](https://codecov.io/gh/smartystreets/cproxy/branch/master/graph/badge.svg)](https://codecov.io/gh/smartystreets/cproxy)
+[![Go Report Card](https://goreportcard.com/badge/github.com/smartystreets/cproxy)](https://goreportcard.com/report/github.com/smartystreets/cproxy)
 
 Purpose
 -----------------------
