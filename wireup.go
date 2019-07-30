@@ -22,51 +22,51 @@ func Configure(options ...Option) http.Handler {
 type Option func(*Wireup)
 
 func WithFilter(value Filter) Option {
-	return func(this *Wireup) { this.filter = value }
+	return func(it *Wireup) { it.filter = value }
 }
 func WithClientConnector(value ClientConnector) Option {
-	return func(this *Wireup) { this.clientConnector = value }
+	return func(it *Wireup) { it.clientConnector = value }
 }
 func WithDialer(value Dialer) Option {
-	return func(this *Wireup) { this.dialer = value }
+	return func(it *Wireup) { it.dialer = value }
 }
 func WithInitializer(value Initializer) Option {
-	return func(this *Wireup) { this.initializer = value }
+	return func(it *Wireup) { it.initializer = value }
 }
 func WithServerConnector(value ServerConnector) Option {
-	return func(this *Wireup) { this.serverConnector = value }
+	return func(it *Wireup) { it.serverConnector = value }
 }
 func WithMeter(value Meter) Option {
-	return func(this *Wireup) { this.meter = value }
+	return func(it *Wireup) { it.meter = value }
 }
 
-func (this *Wireup) build() http.Handler {
-	if this.filter == nil {
-		this.filter = NewFilter()
+func (it *Wireup) build() http.Handler {
+	if it.filter == nil {
+		it.filter = NewFilter()
 	}
 
-	if this.clientConnector == nil {
-		this.clientConnector = NewClientConnector()
+	if it.clientConnector == nil {
+		it.clientConnector = NewClientConnector()
 	}
 
-	if this.meter == nil {
-		this.meter = NewMeter()
+	if it.meter == nil {
+		it.meter = NewMeter()
 	}
 
-	return NewHandler(this.filter, this.clientConnector, this.buildServerConnector(), this.meter)
+	return NewHandler(it.filter, it.clientConnector, it.buildServerConnector(), it.meter)
 }
-func (this *Wireup) buildServerConnector() ServerConnector {
-	if this.dialer == nil {
-		this.dialer = NewDialer()
+func (it *Wireup) buildServerConnector() ServerConnector {
+	if it.dialer == nil {
+		it.dialer = NewDialer()
 	}
 
-	if this.initializer == nil {
-		this.initializer = NewInitializer()
+	if it.initializer == nil {
+		it.initializer = NewInitializer()
 	}
 
-	if this.serverConnector == nil {
-		this.serverConnector = NewServerConnector(this.dialer, this.initializer)
+	if it.serverConnector == nil {
+		it.serverConnector = NewServerConnector(it.dialer, it.initializer)
 	}
 
-	return this.serverConnector
+	return it.serverConnector
 }

@@ -22,26 +22,26 @@ type ProxyFixture struct {
 	proxy *DefaultProxy
 }
 
-func (this *ProxyFixture) Setup() {
-	this.client = NewTestSocket()
-	this.server = NewTestSocket()
-	this.proxy = NewProxy(this.client, this.server)
+func (it *ProxyFixture) Setup() {
+	it.client = NewTestSocket()
+	it.server = NewTestSocket()
+	it.proxy = NewProxy(it.client, it.server)
 }
 
-func (this *ProxyFixture) TestProxyCopiesAndCloses() {
-	this.client.readBuffer.WriteString("from client")
-	this.server.readBuffer.WriteString("from server")
+func (it *ProxyFixture) TestProxyCopiesAndCloses() {
+	it.client.readBuffer.WriteString("from client")
+	it.server.readBuffer.WriteString("from server")
 
-	this.proxy.Proxy()
+	it.proxy.Proxy()
 
-	this.So(this.client.writeBuffer.String(), should.Equal, "from server")
-	this.So(this.server.writeBuffer.String(), should.Equal, "from client")
-	this.So(this.client.closeRead, should.Equal, 1)
-	this.So(this.server.closeWrite, should.Equal, 1)
-	this.So(this.client.closeWrite, should.Equal, 1)
-	this.So(this.server.closeRead, should.Equal, 1)
-	this.So(this.server.close, should.Equal, 1)
-	this.So(this.client.close, should.Equal, 1)
+	it.So(it.client.writeBuffer.String(), should.Equal, "from server")
+	it.So(it.server.writeBuffer.String(), should.Equal, "from client")
+	it.So(it.client.closeRead, should.Equal, 1)
+	it.So(it.server.closeWrite, should.Equal, 1)
+	it.So(it.client.closeWrite, should.Equal, 1)
+	it.So(it.server.closeRead, should.Equal, 1)
+	it.So(it.server.close, should.Equal, 1)
+	it.So(it.client.close, should.Equal, 1)
 }
 
 //////////////////////////////////////////////////////////////
@@ -65,39 +65,39 @@ func NewTestSocket() *TestSocket {
 	}
 }
 
-func (this *TestSocket) Close() error {
-	this.close++
+func (it *TestSocket) Close() error {
+	it.close++
 	return nil
 }
-func (this *TestSocket) CloseRead() error {
-	this.closeRead++
+func (it *TestSocket) CloseRead() error {
+	it.closeRead++
 	return nil
 }
-func (this *TestSocket) CloseWrite() error {
-	this.closeWrite++
+func (it *TestSocket) CloseWrite() error {
+	it.closeWrite++
 	return nil
 }
-func (this *TestSocket) Read(value []byte) (int, error) {
-	this.reads++
+func (it *TestSocket) Read(value []byte) (int, error) {
+	it.reads++
 
-	if this.close > 0 || this.closeRead > 0 {
+	if it.close > 0 || it.closeRead > 0 {
 		panic("Can't read from closed socket")
 	}
 
-	return this.readBuffer.Read(value)
+	return it.readBuffer.Read(value)
 }
-func (this *TestSocket) Write(value []byte) (int, error) {
-	this.writes++
+func (it *TestSocket) Write(value []byte) (int, error) {
+	it.writes++
 
-	if this.close > 0 || this.closeWrite > 0 {
+	if it.close > 0 || it.closeWrite > 0 {
 		panic("Can't write to closed socket")
 	}
-	return this.writeBuffer.Write(value)
+	return it.writeBuffer.Write(value)
 }
 
-func (this *TestSocket) RemoteAddr() net.Addr {
+func (it *TestSocket) RemoteAddr() net.Addr {
 	return &net.TCPAddr{
-		IP:   net.ParseIP(this.address),
-		Port: this.port,
+		IP:   net.ParseIP(it.address),
+		Port: it.port,
 	}
 }

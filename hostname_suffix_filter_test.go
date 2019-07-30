@@ -18,29 +18,29 @@ type HostnameSuffixFilterFixture struct {
 	filter *HostnameSuffixFilter
 }
 
-func (this *HostnameSuffixFilterFixture) Setup() {
-	this.filter = NewHostnameSuffixFilter([]string{"domain:1234", ".domain2:5678"})
+func (it *HostnameSuffixFilterFixture) Setup() {
+	it.filter = NewHostnameSuffixFilter([]string{"domain:1234", ".domain2:5678"})
 }
 
-func (this *HostnameSuffixFilterFixture) TestDenied() {
-	this.assertUnauthorized("")
-	this.assertUnauthorized("a")
-	this.assertUnauthorized("domain:12345")
-	this.assertUnauthorized("DOMAIN:1234")
+func (it *HostnameSuffixFilterFixture) TestDenied() {
+	it.assertUnauthorized("")
+	it.assertUnauthorized("a")
+	it.assertUnauthorized("domain:12345")
+	it.assertUnauthorized("DOMAIN:1234")
 }
 
-func (this *HostnameSuffixFilterFixture) assertUnauthorized(domain string) {
+func (it *HostnameSuffixFilterFixture) assertUnauthorized(domain string) {
 	request := httptest.NewRequest("CONNECT", domain, nil)
-	this.So(this.filter.IsAuthorized(request), should.BeFalse)
+	it.So(it.filter.IsAuthorized(request), should.BeFalse)
 }
 
-func (this *HostnameSuffixFilterFixture) TestAuthorized() {
-	this.assertAuthorized("domain:1234")
-	this.assertAuthorized("whatever.domain2:5678")
-	this.assertAuthorized("somedomain:1234") // only matches suffix
+func (it *HostnameSuffixFilterFixture) TestAuthorized() {
+	it.assertAuthorized("domain:1234")
+	it.assertAuthorized("whatever.domain2:5678")
+	it.assertAuthorized("somedomain:1234") // only matches suffix
 }
 
-func (this *HostnameSuffixFilterFixture) assertAuthorized(domain string) {
+func (it *HostnameSuffixFilterFixture) assertAuthorized(domain string) {
 	request := httptest.NewRequest("CONNECT", domain, nil)
-	this.So(this.filter.IsAuthorized(request), should.BeTrue)
+	it.So(it.filter.IsAuthorized(request), should.BeTrue)
 }

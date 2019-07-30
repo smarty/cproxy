@@ -7,5 +7,5 @@ func NewMeter() *DefaultMeter {
 	return &DefaultMeter{}
 }
 
-func (this *DefaultMeter) Measure(int) {
+func (it *DefaultMeter) Measure(int) {
 }

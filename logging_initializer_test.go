@@ -21,41 +21,41 @@ type LoggingInitializerFixture struct {
 	initializer *LoggingInitializer
 }
 
-func (this *LoggingInitializerFixture) Setup() {
-	this.client = NewTestSocket()
-	this.server = NewTestSocket()
-	this.client.address = "1.2.3.4"
-	this.client.port = 4321
-	this.server.address = "5.6.7.8"
-	this.server.port = 8765
+func (it *LoggingInitializerFixture) Setup() {
+	it.client = NewTestSocket()
+	it.server = NewTestSocket()
+	it.client.address = "1.2.3.4"
+	it.client.port = 4321
+	it.server.address = "5.6.7.8"
+	it.server.port = 8765
 
-	this.fakeInner = NewTestInitializer(true)
-	this.initializer = NewLoggingInitializer(this.fakeInner)
-	this.initializer.logger = logging.Capture()
+	it.fakeInner = NewTestInitializer(true)
+	it.initializer = NewLoggingInitializer(it.fakeInner)
+	it.initializer.logger = logging.Capture()
 }
 
-func (this *LoggingInitializerFixture) TestInnerInitializerCalled() {
-	result := this.initializer.Initialize(this.client, this.server)
+func (it *LoggingInitializerFixture) TestInnerInitializerCalled() {
+	result := it.initializer.Initialize(it.client, it.server)
 
-	this.So(result, should.BeTrue)
-	this.So(this.fakeInner.client, should.Equal, this.client)
-	this.So(this.fakeInner.server, should.Equal, this.server)
+	it.So(result, should.BeTrue)
+	it.So(it.fakeInner.client, should.Equal, it.client)
+	it.So(it.fakeInner.server, should.Equal, it.server)
 }
 
-func (this *LoggingInitializerFixture) TestLoggingOnFailure() {
-	this.fakeInner.success = false
+func (it *LoggingInitializerFixture) TestLoggingOnFailure() {
+	it.fakeInner.success = false
 
-	this.initializer.Initialize(this.client, this.server)
+	it.initializer.Initialize(it.client, it.server)
 
-	this.So(this.initializer.logger.Calls, should.Equal, 1)
-	this.So(this.initializer.logger.Log.String(), should.EndWith,
+	it.So(it.initializer.logger.Calls, should.Equal, 1)
+	it.So(it.initializer.logger.Log.String(), should.EndWith,
 		"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]\n")
 }
 
-func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {
-	this.initializer.Initialize(this.client, this.server)
+func (it *LoggingInitializerFixture) TestLoggingOnSuccess() {
+	it.initializer.Initialize(it.client, it.server)
 
-	this.So(this.initializer.logger.Calls, should.Equal, 1)
-	this.So(this.initializer.logger.Log.String(), should.EndWith,
+	it.So(it.initializer.logger.Calls, should.Equal, 1)
+	it.So(it.initializer.logger.Log.String(), should.EndWith,
 		"[INFO] Established connection [1.2.3.4:4321] -> [5.6.7.8:8765]\n")
 }

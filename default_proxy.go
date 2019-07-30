@@ -22,19 +22,19 @@ func NewProxy(client, server Socket) *DefaultProxy {
 	}
 }
 
-func (this *DefaultProxy) Proxy() {
-	go this.streamAndClose(this.client, this.server)
-	go this.streamAndClose(this.server, this.client)
-	this.closeSockets()
+func (it *DefaultProxy) Proxy() {
+	go it.streamAndClose(it.client, it.server)
+	go it.streamAndClose(it.server, it.client)
+	it.closeSockets()
 }
 
-func (this *DefaultProxy) streamAndClose(reader, writer Socket) {
+func (it *DefaultProxy) streamAndClose(reader, writer Socket) {
 	io.Copy(writer, reader)
 
 	tryCloseRead(reader)
 	tryCloseWrite(writer)
 
-	this.waiter.Done()
+	it.waiter.Done()
 }
 func tryCloseRead(socket Socket) {
 	if tcp, ok := socket.(TCPSocket); ok {
@@ -47,8 +47,8 @@ func tryCloseWrite(socket Socket) {
 	}
 }
 
-func (this *DefaultProxy) closeSockets() {
-	this.waiter.Wait()
-	this.client.Close()
-	this.server.Close()
+func (it *DefaultProxy) closeSockets() {
+	it.waiter.Wait()
+	it.client.Close()
+	it.server.Close()
 }

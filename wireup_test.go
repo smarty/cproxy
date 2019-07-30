@@ -23,27 +23,27 @@ type WireupFixture struct {
 	handler         http.Handler
 }
 
-func (this *WireupFixture) Setup() {
-	this.clientSocket = NewTestSocket()
-	this.serverSocket = NewTestSocket()
-	this.clientConnector = NewTestClientConnector(this.clientSocket)
-	this.dialer = NewTestDialer(this.serverSocket)
-	this.handler = Configure(
-		WithClientConnector(this.clientConnector),
-		WithDialer(this.dialer),
+func (it *WireupFixture) Setup() {
+	it.clientSocket = NewTestSocket()
+	it.serverSocket = NewTestSocket()
+	it.clientConnector = NewTestClientConnector(it.clientSocket)
+	it.dialer = NewTestDialer(it.serverSocket)
+	it.handler = Configure(
+		WithClientConnector(it.clientConnector),
+		WithDialer(it.dialer),
 	)
 }
 
-func (this *WireupFixture) TestEndToEnd() {
+func (it *WireupFixture) TestEndToEnd() {
 	request := httptest.NewRequest("CONNECT", "host", nil)
 	response := httptest.NewRecorder()
 
-	this.clientSocket.readBuffer.WriteString("from client")
-	this.serverSocket.readBuffer.WriteString("from server")
+	it.clientSocket.readBuffer.WriteString("from client")
+	it.serverSocket.readBuffer.WriteString("from server")
 
-	this.handler.ServeHTTP(response, request)
+	it.handler.ServeHTTP(response, request)
 
-	this.So(this.dialer.address, should.Equal, "host")
-	this.So(this.clientSocket.writeBuffer.String(), should.Equal, "HTTP/1.1 200 OK\r\n\r\nfrom server")
-	this.So(this.serverSocket.writeBuffer.String(), should.Equal, "from client")
+	it.So(it.dialer.address, should.Equal, "host")
+	it.So(it.clientSocket.writeBuffer.String(), should.Equal, "HTTP/1.1 200 OK\r\n\r\nfrom server")
+	it.So(it.serverSocket.writeBuffer.String(), should.Equal, "from client")
 }

@@ -18,31 +18,31 @@ func NewHandler(filter Filter, clientConnector ClientConnector, serverConnector 
 	}
 }
 
-func (this *DefaultHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
-	this.meter.Measure(MeasurementHTTPRequest)
+func (it *DefaultHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+	it.meter.Measure(MeasurementHTTPRequest)
 
 	if request.Method != "CONNECT" {
-		this.meter.Measure(MeasurementBadMethod)
+		it.meter.Measure(MeasurementBadMethod)
 		writeResponseStatus(response, http.StatusMethodNotAllowed)
 
-	} else if !this.filter.IsAuthorized(request) {
-		this.meter.Measure(MeasurementUnauthorizedRequest)
+	} else if !it.filter.IsAuthorized(request) {
+		it.meter.Measure(MeasurementUnauthorizedRequest)
 		writeResponseStatus(response, http.StatusUnauthorized)
 
-	} else if client := this.clientConnector.Connect(response); client == nil {
-		this.meter.Measure(MeasurementClientConnectionFailed)
+	} else if client := it.clientConnector.Connect(response); client == nil {
+		it.meter.Measure(MeasurementClientConnectionFailed)
 		writeResponseStatus(response, http.StatusNotImplemented)
 
-	} else if proxy := this.serverConnector.Connect(client, request.URL.Host); proxy == nil {
-		this.meter.Measure(MeasurementServerConnectionFailed)
+	} else if proxy := it.serverConnector.Connect(client, request.URL.Host); proxy == nil {
+		it.meter.Measure(MeasurementServerConnectionFailed)
 		client.Write(StatusBadGateway)
 		client.Close()
 
 	} else {
-		this.meter.Measure(MeasurementProxyReady)
+		it.meter.Measure(MeasurementProxyReady)
 		client.Write(StatusReady)
 		proxy.Proxy()
-		this.meter.Measure(MeasurementProxyComplete)
+		it.meter.Measure(MeasurementProxyComplete)
 	}
 }
 

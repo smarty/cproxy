@@ -21,16 +21,16 @@ func NewDialerWithTimeout(timeout time.Duration) *DefaultDialer {
 	return &DefaultDialer{timeout: timeout}
 }
 
-func (this *DefaultDialer) WithLogging() *DefaultDialer {
-	this.logging = true
-	return this
+func (it *DefaultDialer) WithLogging() *DefaultDialer {
+	it.logging = true
+	return it
 }
 
-func (this *DefaultDialer) Dial(address string) Socket {
-	if socket, err := net.DialTimeout("tcp", address, this.timeout); err == nil {
+func (it *DefaultDialer) Dial(address string) Socket {
+	if socket, err := net.DialTimeout("tcp", address, it.timeout); err == nil {
 		return socket
-	} else if this.logging {
-		this.logger.Printf("[INFO] Unable to establish connection to [%s]: %s", address, err)
+	} else if it.logging {
+		it.logger.Printf("[INFO] Unable to establish connection to [%s]: %s", address, err)
 	}
 
 	return nil

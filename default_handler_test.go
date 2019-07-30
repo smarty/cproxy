@@ -28,78 +28,78 @@ type HandlerFixture struct {
 	response *httptest.ResponseRecorder
 }
 
-func (this *HandlerFixture) Setup() {
-	this.filter = NewTestFilter(true)
-	this.socket = &DummySocket{}
-	this.clientConnector = NewTestClientConnector(this.socket)
-	this.serverConnector = NewTestServerConnector()
-	this.meter = NewTestMeter()
+func (it *HandlerFixture) Setup() {
+	it.filter = NewTestFilter(true)
+	it.socket = &DummySocket{}
+	it.clientConnector = NewTestClientConnector(it.socket)
+	it.serverConnector = NewTestServerConnector()
+	it.meter = NewTestMeter()
 
-	this.handler = NewHandler(this.filter, this.clientConnector, this.serverConnector, this.meter)
+	it.handler = NewHandler(it.filter, it.clientConnector, it.serverConnector, it.meter)
 
-	this.request = httptest.NewRequest("CONNECT", "domain:443", nil)
-	this.response = httptest.NewRecorder()
+	it.request = httptest.NewRequest("CONNECT", "domain:443", nil)
+	it.response = httptest.NewRecorder()
 }
 
 //////////////////////////////////////////////////////////////
 
-func (this *HandlerFixture) TestForbidsUnknownMethods() {
-	this.request.Method = "GET"
+func (it *HandlerFixture) TestForbidsUnknownMethods() {
+	it.request.Method = "GET"
 
-	this.serveHTTP()
+	it.serveHTTP()
 
-	this.shouldHaveResponse(405, "Method Not Allowed")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementBadMethod})
+	it.shouldHaveResponse(405, "Method Not Allowed")
+	it.So(it.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementBadMethod})
 }
 
-func (this *HandlerFixture) TestsDisallowsUnauthorizedRequests() {
-	this.filter.authorized = false
+func (it *HandlerFixture) TestsDisallowsUnauthorizedRequests() {
+	it.filter.authorized = false
 
-	this.serveHTTP()
+	it.serveHTTP()
 
-	this.So(this.filter.request, should.Equal, this.request)
-	this.shouldHaveResponse(401, "Unauthorized")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementUnauthorizedRequest})
+	it.So(it.filter.request, should.Equal, it.request)
+	it.shouldHaveResponse(401, "Unauthorized")
+	it.So(it.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementUnauthorizedRequest})
 }
 
-func (this *HandlerFixture) TestRejectClientWhichCannotBeConnected() {
-	this.clientConnector.socket = nil
+func (it *HandlerFixture) TestRejectClientWhichCannotBeConnected() {
+	it.clientConnector.socket = nil
 
-	this.serveHTTP()
+	it.serveHTTP()
 
-	this.So(this.clientConnector.response, should.Equal, this.response)
-	this.shouldHaveResponse(501, "Not Implemented")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementClientConnectionFailed})
+	it.So(it.clientConnector.response, should.Equal, it.response)
+	it.shouldHaveResponse(501, "Not Implemented")
+	it.So(it.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementClientConnectionFailed})
 }
 
-func (this *HandlerFixture) TestRejectBadGatewayRequest() {
-	this.serverConnector.proxy = nil
+func (it *HandlerFixture) TestRejectBadGatewayRequest() {
+	it.serverConnector.proxy = nil
 
-	this.serveHTTP()
+	it.serveHTTP()
 
-	this.So(this.serverConnector.socket, should.Equal, this.socket)
-	this.So(this.serverConnector.address, should.Equal, "domain:443")
-	this.So(this.socket.String(), should.Equal, "HTTP/1.1 502 Bad Gateway\r\n\r\n")
-	this.So(this.socket.closed, should.Equal, 1)
-	this.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementServerConnectionFailed})
+	it.So(it.serverConnector.socket, should.Equal, it.socket)
+	it.So(it.serverConnector.address, should.Equal, "domain:443")
+	it.So(it.socket.String(), should.Equal, "HTTP/1.1 502 Bad Gateway\r\n\r\n")
+	it.So(it.socket.closed, should.Equal, 1)
+	it.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
+	it.So(it.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementServerConnectionFailed})
 }
 
-func (this *HandlerFixture) TestProxyInvoked() {
-	this.serveHTTP()
+func (it *HandlerFixture) TestProxyInvoked() {
+	it.serveHTTP()
 
-	this.So(this.socket.String(), should.Equal, "HTTP/1.1 200 OK\r\n\r\n")
-	this.So(this.serverConnector.proxy.calls, should.Equal, 1)
-	this.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementProxyReady, MeasurementProxyComplete})
+	it.So(it.socket.String(), should.Equal, "HTTP/1.1 200 OK\r\n\r\n")
+	it.So(it.serverConnector.proxy.calls, should.Equal, 1)
+	it.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
+	it.So(it.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementProxyReady, MeasurementProxyComplete})
 }
 
-func (this *HandlerFixture) serveHTTP() {
-	this.handler.ServeHTTP(this.response, this.request)
+func (it *HandlerFixture) serveHTTP() {
+	it.handler.ServeHTTP(it.response, it.request)
 }
-func (this *HandlerFixture) shouldHaveResponse(statusCode int, statusText string) {
-	this.So(this.response.Code, should.Equal, statusCode)
-	this.So(this.response.Body.String(), should.EqualTrimSpace, statusText)
+func (it *HandlerFixture) shouldHaveResponse(statusCode int, statusText string) {
+	it.So(it.response.Code, should.Equal, statusCode)
+	it.So(it.response.Body.String(), should.EqualTrimSpace, statusText)
 }
 
 //////////////////////////////////////////////////////////////
@@ -112,9 +112,9 @@ type TestFilter struct {
 func NewTestFilter(authorized bool) *TestFilter {
 	return &TestFilter{authorized: authorized}
 }
-func (this *TestFilter) IsAuthorized(request *http.Request) bool {
-	this.request = request
-	return this.authorized
+func (it *TestFilter) IsAuthorized(request *http.Request) bool {
+	it.request = request
+	return it.authorized
 }
 
 //////////////////////////////////////////////////////////////
@@ -128,9 +128,9 @@ func NewTestClientConnector(socket Socket) *TestClientConnector {
 	return &TestClientConnector{socket: socket}
 }
 
-func (this *TestClientConnector) Connect(response http.ResponseWriter) Socket {
-	this.response = response
-	return this.socket
+func (it *TestClientConnector) Connect(response http.ResponseWriter) Socket {
+	it.response = response
+	return it.socket
 }
 
 //////////////////////////////////////////////////////////////
@@ -145,22 +145,22 @@ func NewTestServerConnector() *TestServerConnector {
 	return &TestServerConnector{proxy: &TestProxy{}}
 }
 
-func (this *TestServerConnector) Connect(socket Socket, address string) Proxy {
-	this.socket = socket
-	this.address = address
+func (it *TestServerConnector) Connect(socket Socket, address string) Proxy {
+	it.socket = socket
+	it.address = address
 
-	if this.proxy == nil {
+	if it.proxy == nil {
 		return nil // Golang nil != nil issue
 	}
 
-	return this.proxy
+	return it.proxy
 }
 
 type TestProxy struct{ calls int }
 
-func (this *TestProxy) Proxy() {
-	if this != nil {
-		this.calls++
+func (it *TestProxy) Proxy() {
+	if it != nil {
+		it.calls++
 	}
 }
 
@@ -171,24 +171,24 @@ type DummySocket struct {
 	closed  int
 }
 
-func (this *DummySocket) Read([]byte) (int, error) {
+func (it *DummySocket) Read([]byte) (int, error) {
 	panic("this test shouldn't read")
 }
 
-func (this *DummySocket) Write(buffer []byte) (int, error) {
-	this.written = append(this.written, buffer...)
+func (it *DummySocket) Write(buffer []byte) (int, error) {
+	it.written = append(it.written, buffer...)
 	return len(buffer), nil
 }
-func (this *DummySocket) Close() error {
-	this.closed++
+func (it *DummySocket) Close() error {
+	it.closed++
 	return nil
 }
 
-func (this *DummySocket) RemoteAddr() net.Addr {
+func (it *DummySocket) RemoteAddr() net.Addr {
 	panic("shouldn't be called")
 }
 
-func (this *DummySocket) String() string { return string(this.written) }
+func (it *DummySocket) String() string { return string(it.written) }
 
 //////////////////////////////////////////////////////////////
 
@@ -199,6 +199,6 @@ type TestMeter struct {
 func NewTestMeter() *TestMeter {
 	return &TestMeter{}
 }
-func (this *TestMeter) Measure(value int) {
-	this.calls = append(this.calls, value)
+func (it *TestMeter) Measure(value int) {
+	it.calls = append(it.calls, value)
 }

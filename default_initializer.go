@@ -7,6 +7,6 @@ func NewInitializer() *DefaultInitializer {
 	return &DefaultInitializer{}
 }
 
-func (this *DefaultInitializer) Initialize(_, _ Socket) bool {
+func (it *DefaultInitializer) Initialize(_, _ Socket) bool {
 	return true
 }

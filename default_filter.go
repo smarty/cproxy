@@ -8,6 +8,6 @@ func NewFilter() *DefaultFilter {
 	return &DefaultFilter{}
 }
 
-func (this *DefaultFilter) IsAuthorized(request *http.Request) bool {
+func (it *DefaultFilter) IsAuthorized(request *http.Request) bool {
 	return true
 }

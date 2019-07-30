@@ -14,7 +14,7 @@ func NewProxyProtocolInitializer() *ProxyProtocolInitializer {
 	return &ProxyProtocolInitializer{}
 }
 
-func (this *ProxyProtocolInitializer) Initialize(client, server Socket) bool {
+func (it *ProxyProtocolInitializer) Initialize(client, server Socket) bool {
 	header := formatHeader(client.RemoteAddr(), server.RemoteAddr())
 	_, err := io.WriteString(server, header)
 	return err == nil

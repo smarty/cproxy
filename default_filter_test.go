@@ -16,9 +16,9 @@ type FilterFixture struct {
 	*gunit.Fixture
 }
 
-func (this *FilterFixture) TestAllowEverything() {
+func (it *FilterFixture) TestAllowEverything() {
 	filter := NewFilter()
 
-	this.So(filter.IsAuthorized(nil), should.BeTrue)
-	this.So(filter.IsAuthorized(httptest.NewRequest("GET", "/", nil)), should.BeTrue)
+	it.So(filter.IsAuthorized(nil), should.BeTrue)
+	it.So(filter.IsAuthorized(httptest.NewRequest("GET", "/", nil)), should.BeTrue)
 }

@@ -9,7 +9,7 @@ func NewClientConnector() *DefaultClientConnector {
 	return &DefaultClientConnector{}
 }
 
-func (this *DefaultClientConnector) Connect(response http.ResponseWriter) Socket {
+func (it *DefaultClientConnector) Connect(response http.ResponseWriter) Socket {
 	if hijacker, ok := response.(http.Hijacker); !ok {
 		return nil
 	} else if socket, _, _ := hijacker.Hijack(); socket == nil {

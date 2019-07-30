@@ -22,49 +22,49 @@ type ServerConnectorFixture struct {
 	connector *DefaultServerConnector
 }
 
-func (this *ServerConnectorFixture) Setup() {
-	this.clientSocket = NewTestSocket()
-	this.serverSocket = NewTestSocket()
-	this.dialer = NewTestDialer(this.serverSocket)
-	this.initializer = NewTestInitializer(true)
-	this.connector = NewServerConnector(this.dialer, this.initializer)
+func (it *ServerConnectorFixture) Setup() {
+	it.clientSocket = NewTestSocket()
+	it.serverSocket = NewTestSocket()
+	it.dialer = NewTestDialer(it.serverSocket)
+	it.initializer = NewTestInitializer(true)
+	it.connector = NewServerConnector(it.dialer, it.initializer)
 }
 
 //////////////////////////////////////////////////////////////
 
-func (this *ServerConnectorFixture) TestFailedDialReturnsNoProxy() {
-	this.dialer.socket = nil
+func (it *ServerConnectorFixture) TestFailedDialReturnsNoProxy() {
+	it.dialer.socket = nil
 
-	proxy := this.connect("address")
+	proxy := it.connect("address")
 
-	this.So(proxy, should.BeNil)
-	this.So(this.dialer.address, should.Equal, "address")
+	it.So(proxy, should.BeNil)
+	it.So(it.dialer.address, should.Equal, "address")
 }
 
-func (this *ServerConnectorFixture) TestFailedInitializationClosesServerSocketAndReturnsNoProxy() {
-	this.initializer.success = false
+func (it *ServerConnectorFixture) TestFailedInitializationClosesServerSocketAndReturnsNoProxy() {
+	it.initializer.success = false
 
-	proxy := this.connect("a")
+	proxy := it.connect("a")
 
-	this.So(proxy, should.BeNil)
-	this.So(this.clientSocket.close, should.Equal, 0)
-	this.So(this.serverSocket.close, should.Equal, 1)
+	it.So(proxy, should.BeNil)
+	it.So(it.clientSocket.close, should.Equal, 0)
+	it.So(it.serverSocket.close, should.Equal, 1)
 }
 
-func (this *ServerConnectorFixture) TestSuccessfulConnectionYieldsInitializedProxy() {
-	proxy := this.connect("a")
+func (it *ServerConnectorFixture) TestSuccessfulConnectionYieldsInitializedProxy() {
+	proxy := it.connect("a")
 
-	this.So(proxy, should.NotBeNil)
-	this.So(proxy.(*DefaultProxy).client, should.Equal, this.clientSocket)
-	this.So(proxy.(*DefaultProxy).server, should.Equal, this.serverSocket)
-	this.So(this.initializer.client, should.Equal, this.clientSocket)
-	this.So(this.initializer.server, should.Equal, this.serverSocket)
-	this.So(this.clientSocket.close, should.Equal, 0)
-	this.So(this.serverSocket.close, should.Equal, 0)
+	it.So(proxy, should.NotBeNil)
+	it.So(proxy.(*DefaultProxy).client, should.Equal, it.clientSocket)
+	it.So(proxy.(*DefaultProxy).server, should.Equal, it.serverSocket)
+	it.So(it.initializer.client, should.Equal, it.clientSocket)
+	it.So(it.initializer.server, should.Equal, it.serverSocket)
+	it.So(it.clientSocket.close, should.Equal, 0)
+	it.So(it.serverSocket.close, should.Equal, 0)
 }
 
-func (this *ServerConnectorFixture) connect(address string) Proxy {
-	return this.connector.Connect(this.clientSocket, address)
+func (it *ServerConnectorFixture) connect(address string) Proxy {
+	return it.connector.Connect(it.clientSocket, address)
 }
 
 //////////////////////////////////////////////////////////////
@@ -78,9 +78,9 @@ func NewTestDialer(socket Socket) *TestDialer {
 	return &TestDialer{socket: socket}
 }
 
-func (this *TestDialer) Dial(address string) Socket {
-	this.address = address
-	return this.socket
+func (it *TestDialer) Dial(address string) Socket {
+	it.address = address
+	return it.socket
 }
 
 //////////////////////////////////////////////////////////////
@@ -95,8 +95,8 @@ func NewTestInitializer(success bool) *TestInitializer {
 	return &TestInitializer{success: success}
 }
 
-func (this *TestInitializer) Initialize(client, server Socket) bool {
-	this.client = client
-	this.server = server
-	return this.success
+func (it *TestInitializer) Initialize(client, server Socket) bool {
+	it.client = client
+	it.server = server
+	return it.success
 }
