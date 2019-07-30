@@ -24,9 +24,9 @@ func formatHeader(client, server net.Addr) string {
 	serverAddress, serverPort := parseAddress(server.String())
 	if strings.Contains(clientAddress, ":") {
 		return fmt.Sprintf(proxyProtocolIPv6Preamble, clientAddress, serverAddress, clientPort, serverPort)
-	} else {
-		return fmt.Sprintf(proxyProtocolIPv4Preamble, clientAddress, serverAddress, clientPort, serverPort)
 	}
+
+	return fmt.Sprintf(proxyProtocolIPv4Preamble, clientAddress, serverAddress, clientPort, serverPort)
 }
 func parseAddress(address string) (string, string) {
 	address, port, _ := net.SplitHostPort(address)
