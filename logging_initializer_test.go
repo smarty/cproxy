@@ -1,11 +1,11 @@
 package cproxy
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
-	"github.com/smartystreets/logging"
 )
 
 func TestLoggingInitializerFixture(t *testing.T) {
@@ -18,44 +18,44 @@ type LoggingInitializerFixture struct {
 	client      *TestSocket
 	server      *TestSocket
 	fakeInner   *TestInitializer
-	initializer *LoggingInitializer
+	initializer initializer
+	logs        []string
 }
 
-func (it *LoggingInitializerFixture) Setup() {
-	it.client = NewTestSocket()
-	it.server = NewTestSocket()
-	it.client.address = "1.2.3.4"
-	it.client.port = 4321
-	it.server.address = "5.6.7.8"
-	it.server.port = 8765
+func (this *LoggingInitializerFixture) Setup() {
+	this.client = NewTestSocket()
+	this.server = NewTestSocket()
+	this.client.address = "1.2.3.4"
+	this.client.port = 4321
+	this.server.address = "5.6.7.8"
+	this.server.port = 8765
 
-	it.fakeInner = NewTestInitializer(true)
-	it.initializer = NewLoggingInitializer(it.fakeInner)
-	it.initializer.logger = logging.Capture()
+	this.fakeInner = NewTestInitializer(true)
+	this.initializer = newLoggingInitializer(&configuration{Logger: this, Initializer: this.fakeInner, LogConnections: true})
 }
 
-func (it *LoggingInitializerFixture) TestInnerInitializerCalled() {
-	result := it.initializer.Initialize(it.client, it.server)
+func (this *LoggingInitializerFixture) TestInnerInitializerCalled() {
+	result := this.initializer.Initialize(this.client, this.server)
 
-	it.So(result, should.BeTrue)
-	it.So(it.fakeInner.client, should.Equal, it.client)
-	it.So(it.fakeInner.server, should.Equal, it.server)
+	this.So(result, should.BeTrue)
+	this.So(this.fakeInner.client, should.Equal, this.client)
+	this.So(this.fakeInner.server, should.Equal, this.server)
 }
 
-func (it *LoggingInitializerFixture) TestLoggingOnFailure() {
-	it.fakeInner.success = false
+func (this *LoggingInitializerFixture) TestLoggingOnFailure() {
+	this.fakeInner.success = false
 
-	it.initializer.Initialize(it.client, it.server)
+	this.initializer.Initialize(this.client, this.server)
 
-	it.So(it.initializer.logger.Calls, should.Equal, 1)
-	it.So(it.initializer.logger.Log.String(), should.EndWith,
-		"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]\n")
+	this.So(this.logs, should.Resemble, []string{"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]"})
 }
 
-func (it *LoggingInitializerFixture) TestLoggingOnSuccess() {
-	it.initializer.Initialize(it.client, it.server)
+func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {
+	this.initializer.Initialize(this.client, this.server)
 
-	it.So(it.initializer.logger.Calls, should.Equal, 1)
-	it.So(it.initializer.logger.Log.String(), should.EndWith,
-		"[INFO] Established connection [1.2.3.4:4321] -> [5.6.7.8:8765]\n")
+	this.So(this.logs, should.Resemble, []string{"[INFO] Established connection [1.2.3.4:4321] -> [5.6.7.8:8765]"})
+}
+
+func (this *LoggingInitializerFixture) Printf(format string, args ...interface{}) {
+	this.logs = append(this.logs, fmt.Sprintf(format, args...))
 }

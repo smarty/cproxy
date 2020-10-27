@@ -2,15 +2,15 @@ package cproxy
 
 import "net/http"
 
-type DefaultHandler struct {
+type defaultHandler struct {
 	filter          Filter
-	clientConnector ClientConnector
-	serverConnector ServerConnector
-	meter           Meter
+	clientConnector clientConnector
+	serverConnector serverConnector
+	meter           monitor
 }
 
-func NewHandler(filter Filter, clientConnector ClientConnector, serverConnector ServerConnector, meter Meter) *DefaultHandler {
-	return &DefaultHandler{
+func newHandler(filter Filter, clientConnector clientConnector, serverConnector serverConnector, meter monitor) *defaultHandler {
+	return &defaultHandler{
 		filter:          filter,
 		clientConnector: clientConnector,
 		serverConnector: serverConnector,
@@ -18,31 +18,31 @@ func NewHandler(filter Filter, clientConnector ClientConnector, serverConnector 
 	}
 }
 
-func (it *DefaultHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
-	it.meter.Measure(MeasurementHTTPRequest)
+func (this *defaultHandler) ServeHTTP(response http.ResponseWriter, request *http.Request) {
+	this.meter.Measure(MeasurementHTTPRequest)
 
 	if request.Method != "CONNECT" {
-		it.meter.Measure(MeasurementBadMethod)
+		this.meter.Measure(MeasurementBadMethod)
 		writeResponseStatus(response, http.StatusMethodNotAllowed)
 
-	} else if !it.filter.IsAuthorized(request) {
-		it.meter.Measure(MeasurementUnauthorizedRequest)
+	} else if !this.filter.IsAuthorized(request) {
+		this.meter.Measure(MeasurementUnauthorizedRequest)
 		writeResponseStatus(response, http.StatusUnauthorized)
 
-	} else if client := it.clientConnector.Connect(response); client == nil {
-		it.meter.Measure(MeasurementClientConnectionFailed)
+	} else if client := this.clientConnector.Connect(response); client == nil {
+		this.meter.Measure(MeasurementClientConnectionFailed)
 		writeResponseStatus(response, http.StatusNotImplemented)
 
-	} else if proxy := it.serverConnector.Connect(client, request.URL.Host); proxy == nil {
-		it.meter.Measure(MeasurementServerConnectionFailed)
-		client.Write(StatusBadGateway)
-		client.Close()
+	} else if proxy := this.serverConnector.Connect(client, request.URL.Host); proxy == nil {
+		this.meter.Measure(MeasurementServerConnectionFailed)
+		_, _ = client.Write(statusBadGateway)
+		_ = client.Close()
 
 	} else {
-		it.meter.Measure(MeasurementProxyReady)
-		client.Write(StatusReady)
+		this.meter.Measure(MeasurementProxyReady)
+		_, _ = client.Write(statusReady)
 		proxy.Proxy()
-		it.meter.Measure(MeasurementProxyComplete)
+		this.meter.Measure(MeasurementProxyComplete)
 	}
 }
 
@@ -51,6 +51,6 @@ func writeResponseStatus(response http.ResponseWriter, statusCode int) {
 }
 
 var (
-	StatusBadGateway = []byte("HTTP/1.1 502 Bad Gateway\r\n\r\n")
-	StatusReady      = []byte("HTTP/1.1 200 OK\r\n\r\n")
+	statusBadGateway = []byte("HTTP/1.1 502 Bad Gateway\r\n\r\n")
+	statusReady      = []byte("HTTP/1.1 200 OK\r\n\r\n")
 )

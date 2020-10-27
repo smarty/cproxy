@@ -19,84 +19,84 @@ type ServerConnectorFixture struct {
 	dialer       *TestDialer
 	initializer  *TestInitializer
 
-	connector *DefaultServerConnector
+	connector *defaultServerConnector
 }
 
-func (it *ServerConnectorFixture) Setup() {
-	it.clientSocket = NewTestSocket()
-	it.serverSocket = NewTestSocket()
-	it.dialer = NewTestDialer(it.serverSocket)
-	it.initializer = NewTestInitializer(true)
-	it.connector = NewServerConnector(it.dialer, it.initializer)
+func (this *ServerConnectorFixture) Setup() {
+	this.clientSocket = NewTestSocket()
+	this.serverSocket = NewTestSocket()
+	this.dialer = NewTestDialer(this.serverSocket)
+	this.initializer = NewTestInitializer(true)
+	this.connector = newServerConnector(this.dialer, this.initializer)
 }
 
 //////////////////////////////////////////////////////////////
 
-func (it *ServerConnectorFixture) TestFailedDialReturnsNoProxy() {
-	it.dialer.socket = nil
+func (this *ServerConnectorFixture) TestFailedDialReturnsNoProxy() {
+	this.dialer.socket = nil
 
-	proxy := it.connect("address")
+	proxy := this.connect("address")
 
-	it.So(proxy, should.BeNil)
-	it.So(it.dialer.address, should.Equal, "address")
+	this.So(proxy, should.BeNil)
+	this.So(this.dialer.address, should.Equal, "address")
 }
 
-func (it *ServerConnectorFixture) TestFailedInitializationClosesServerSocketAndReturnsNoProxy() {
-	it.initializer.success = false
+func (this *ServerConnectorFixture) TestFailedInitializationClosesServerSocketAndReturnsNoProxy() {
+	this.initializer.success = false
 
-	proxy := it.connect("a")
+	proxy := this.connect("a")
 
-	it.So(proxy, should.BeNil)
-	it.So(it.clientSocket.close, should.Equal, 0)
-	it.So(it.serverSocket.close, should.Equal, 1)
+	this.So(proxy, should.BeNil)
+	this.So(this.clientSocket.close, should.Equal, 0)
+	this.So(this.serverSocket.close, should.Equal, 1)
 }
 
-func (it *ServerConnectorFixture) TestSuccessfulConnectionYieldsInitializedProxy() {
-	proxy := it.connect("a")
+func (this *ServerConnectorFixture) TestSuccessfulConnectionYieldsInitializedProxy() {
+	proxy := this.connect("a")
 
-	it.So(proxy, should.NotBeNil)
-	it.So(proxy.(*DefaultProxy).client, should.Equal, it.clientSocket)
-	it.So(proxy.(*DefaultProxy).server, should.Equal, it.serverSocket)
-	it.So(it.initializer.client, should.Equal, it.clientSocket)
-	it.So(it.initializer.server, should.Equal, it.serverSocket)
-	it.So(it.clientSocket.close, should.Equal, 0)
-	it.So(it.serverSocket.close, should.Equal, 0)
+	this.So(proxy, should.NotBeNil)
+	this.So(proxy.(*defaultProxy).client, should.Equal, this.clientSocket)
+	this.So(proxy.(*defaultProxy).server, should.Equal, this.serverSocket)
+	this.So(this.initializer.client, should.Equal, this.clientSocket)
+	this.So(this.initializer.server, should.Equal, this.serverSocket)
+	this.So(this.clientSocket.close, should.Equal, 0)
+	this.So(this.serverSocket.close, should.Equal, 0)
 }
 
-func (it *ServerConnectorFixture) connect(address string) Proxy {
-	return it.connector.Connect(it.clientSocket, address)
+func (this *ServerConnectorFixture) connect(address string) proxy {
+	return this.connector.Connect(this.clientSocket, address)
 }
 
 //////////////////////////////////////////////////////////////
 
 type TestDialer struct {
 	address string
-	socket  Socket
+	socket  socket
 }
 
-func NewTestDialer(socket Socket) *TestDialer {
+func NewTestDialer(socket socket) *TestDialer {
 	return &TestDialer{socket: socket}
 }
 
-func (it *TestDialer) Dial(address string) Socket {
-	it.address = address
-	return it.socket
+func (this *TestDialer) Dial(address string) socket {
+	this.address = address
+	return this.socket
 }
 
 //////////////////////////////////////////////////////////////
 
 type TestInitializer struct {
 	success bool
-	client  Socket
-	server  Socket
+	client  socket
+	server  socket
 }
 
 func NewTestInitializer(success bool) *TestInitializer {
 	return &TestInitializer{success: success}
 }
 
-func (it *TestInitializer) Initialize(client, server Socket) bool {
-	it.client = client
-	it.server = server
-	return it.success
+func (this *TestInitializer) Initialize(client, server socket) bool {
+	this.client = client
+	this.server = server
+	return this.success
 }

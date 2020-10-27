@@ -2,12 +2,8 @@ package cproxy
 
 import "net/http"
 
-type DefaultFilter struct{}
+type defaultFilter struct{}
 
-func NewFilter() *DefaultFilter {
-	return &DefaultFilter{}
-}
+func newFilter() *defaultFilter { return &defaultFilter{} }
 
-func (it *DefaultFilter) IsAuthorized(request *http.Request) bool {
-	return true
-}
+func (this *defaultFilter) IsAuthorized(*http.Request) bool { return true }

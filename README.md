@@ -35,22 +35,21 @@ While `cproxy` can and ultimately should be an executable, it's primary design i
 
 To create a `http.Handler` that's ready for traffic configure it this way:
 ```
-handler := cproxy.Configure().Build()
+handler := cproxy.New()
 ```
 
 The above snippet configures `cproxy` as a basic `HTTP CONNECT` proxy with no specific abilities. If you would like to append the PROXY Protocol header to oubound traffic (which is the reason why it was written), configure it like so:
 ```
-handler := cproxy.Configure(
-        cproxy.WithInitializer(cproxy.NewProxyProtocolInitializer()),
-    ).Build()
+proxyProtocolInitializer := cproxy.NewProxyProtocolInitializer()
+handler := cproxy.New(cproxy.Options.Initializer(proxyProtocolInitializer))
 ```
 
 The handler created is a vanilla `http.Handler` that can be attached to a `http.Server` instance so that it can now receive and proxy traffic.
 
 If you would like to filter traffic based upon custom conditions, you can create an implementation of the `Filter` interface to fully inspect the HTTP request to determine if, for example, the appropriate headers are present and sufficient to allow the `CONNECT` process to proceed. Additionally, you could inspect the destination host, and/or determine if a username/password/token is present as part of the request. You could even limit traffic to a known set of client IPs. All of that behavior can be created by implementing the `Filter` interface and configuring the handler as follows:
 ```
-filter := &MyCustomFilter{}
-handler := cproxy.Configure(WithFilter(filter))
+customFilter := &MyCustomFilter{}
+handler := cproxy.New(cproxy.Options.Filter(customFilter))
 
 http.ListenAndServe(":8080", handler) // now listen for traffic
 ```

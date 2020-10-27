@@ -1,12 +1,7 @@
 package cproxy
 
-type DefaultInitializer struct {
-}
+type defaultInitializer struct{}
 
-func NewInitializer() *DefaultInitializer {
-	return &DefaultInitializer{}
-}
+func newInitializer() *defaultInitializer { return &defaultInitializer{} }
 
-func (it *DefaultInitializer) Initialize(_, _ Socket) bool {
-	return true
-}
+func (this *defaultInitializer) Initialize(_, _ socket) bool { return true }

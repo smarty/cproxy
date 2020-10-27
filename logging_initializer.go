@@ -1,23 +1,25 @@
 package cproxy
 
-import "github.com/smartystreets/logging"
-
-type LoggingInitializer struct {
-	logger *logging.Logger
-	inner  Initializer
+type loggingInitializer struct {
+	logger logger
+	inner  initializer
 }
 
-func NewLoggingInitializer(inner Initializer) *LoggingInitializer {
-	return &LoggingInitializer{inner: inner}
+func newLoggingInitializer(config *configuration) initializer {
+	if !config.LogConnections {
+		return config.Initializer
+	}
+
+	return &loggingInitializer{inner: config.Initializer, logger: config.Logger}
 }
 
-func (it *LoggingInitializer) Initialize(client, server Socket) bool {
-	result := it.inner.Initialize(client, server)
+func (this *loggingInitializer) Initialize(client, server socket) bool {
+	result := this.inner.Initialize(client, server)
 
 	if result {
-		it.logger.Printf("[INFO] Established connection [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
+		this.logger.Printf("[INFO] Established connection [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
 	} else {
-		it.logger.Printf("[INFO] Connection failed [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
+		this.logger.Printf("[INFO] Connection failed [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
 	}
 
 	return result

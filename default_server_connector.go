@@ -1,24 +1,24 @@
 package cproxy
 
-type DefaultServerConnector struct {
-	dialer      Dialer
-	initializer Initializer
+type defaultServerConnector struct {
+	dialer      dialer
+	initializer initializer
 }
 
-func NewServerConnector(dialer Dialer, initializer Initializer) *DefaultServerConnector {
-	return &DefaultServerConnector{dialer: dialer, initializer: initializer}
+func newServerConnector(dialer dialer, initializer initializer) *defaultServerConnector {
+	return &defaultServerConnector{dialer: dialer, initializer: initializer}
 }
 
-func (it *DefaultServerConnector) Connect(client Socket, serverAddress string) Proxy {
-	server := it.dialer.Dial(serverAddress)
+func (this *defaultServerConnector) Connect(client socket, serverAddress string) proxy {
+	server := this.dialer.Dial(serverAddress)
 	if server == nil {
 		return nil
 	}
 
-	if !it.initializer.Initialize(client, server) {
-		server.Close()
+	if !this.initializer.Initialize(client, server) {
+		_ = server.Close()
 		return nil
 	}
 
-	return NewProxy(client, server)
+	return newProxy(client, server)
 }

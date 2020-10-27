@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/smartystreets/cproxy"
+	"github.com/smartystreets/cproxy/v2"
 )
 
 func main() {
-	handler := cproxy.Configure()
+	handler := cproxy.New()
 	log.Println("Listening on:", "*:8080")
-	http.ListenAndServe(":8080", handler)
+	_ = http.ListenAndServe(":8080", handler)
 }

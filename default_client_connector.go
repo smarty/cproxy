@@ -2,14 +2,13 @@ package cproxy
 
 import "net/http"
 
-type DefaultClientConnector struct {
+type defaultClientConnector struct{}
+
+func newClientConnector() *defaultClientConnector {
+	return &defaultClientConnector{}
 }
 
-func NewClientConnector() *DefaultClientConnector {
-	return &DefaultClientConnector{}
-}
-
-func (it *DefaultClientConnector) Connect(response http.ResponseWriter) Socket {
+func (this *defaultClientConnector) Connect(response http.ResponseWriter) socket {
 	if hijacker, ok := response.(http.Hijacker); !ok {
 		return nil
 	} else if socket, _, _ := hijacker.Hijack(); socket == nil {

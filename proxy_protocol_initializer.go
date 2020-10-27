@@ -7,14 +7,13 @@ import (
 	"strings"
 )
 
-type ProxyProtocolInitializer struct {
+type proxyProtocolInitializer struct{}
+
+func newProxyProtocolInitializer() *proxyProtocolInitializer {
+	return &proxyProtocolInitializer{}
 }
 
-func NewProxyProtocolInitializer() *ProxyProtocolInitializer {
-	return &ProxyProtocolInitializer{}
-}
-
-func (it *ProxyProtocolInitializer) Initialize(client, server Socket) bool {
+func (this *proxyProtocolInitializer) Initialize(client, server socket) bool {
 	header := formatHeader(client.RemoteAddr(), server.RemoteAddr())
 	_, err := io.WriteString(server, header)
 	return err == nil

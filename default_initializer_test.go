@@ -15,10 +15,10 @@ type InitializerFixture struct {
 	*gunit.Fixture
 }
 
-func (it *InitializerFixture) TestAlwaysSuccessful() {
-	initializer := NewInitializer()
+func (this *InitializerFixture) TestAlwaysSuccessful() {
+	initializer := newInitializer()
 
-	it.So(initializer.Initialize(nil, nil), should.BeTrue)
-	it.So(initializer.Initialize(NewTestSocket(), nil), should.BeTrue)
-	it.So(initializer.Initialize(NewTestSocket(), NewTestSocket()), should.BeTrue)
+	this.So(initializer.Initialize(nil, nil), should.BeTrue)
+	this.So(initializer.Initialize(NewTestSocket(), nil), should.BeTrue)
+	this.So(initializer.Initialize(NewTestSocket(), NewTestSocket()), should.BeTrue)
 }

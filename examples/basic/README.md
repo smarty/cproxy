@@ -3,7 +3,7 @@ To Run
 
 **NOTE: This example requires the Go runtime to be installed on your machine.**
 
-`cd` to the the `examples/basic` directory and run the following in a terminal window:
+`cd` to the `examples/basic` directory and run the following in a terminal window:
 ```
 $ go run main.go
 ```

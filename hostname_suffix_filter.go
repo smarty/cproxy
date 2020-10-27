@@ -5,18 +5,18 @@ import (
 	"strings"
 )
 
-type HostnameSuffixFilter struct {
+type hostnameSuffixFilter struct {
 	authorized []string
 }
 
-func NewHostnameSuffixFilter(authorized []string) *HostnameSuffixFilter {
-	return &HostnameSuffixFilter{authorized: authorized}
+func NewHostnameSuffixFilter(authorized []string) Filter {
+	return &hostnameSuffixFilter{authorized: authorized}
 }
 
-func (it HostnameSuffixFilter) IsAuthorized(request *http.Request) bool {
+func (this hostnameSuffixFilter) IsAuthorized(request *http.Request) bool {
 	host := request.URL.Host
 
-	for _, authorized := range it.authorized {
+	for _, authorized := range this.authorized {
 		if strings.HasSuffix(host, authorized) {
 			return true
 		}

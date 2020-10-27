@@ -5,50 +5,50 @@ import (
 	"sync"
 )
 
-type DefaultProxy struct {
-	client Socket
-	server Socket
+type defaultProxy struct {
+	client socket
+	server socket
 	waiter *sync.WaitGroup
 }
 
-func NewProxy(client, server Socket) *DefaultProxy {
+func newProxy(client, server socket) *defaultProxy {
 	waiter := &sync.WaitGroup{}
 	waiter.Add(2) // wait on both client->server and server->client streams
 
-	return &DefaultProxy{
+	return &defaultProxy{
 		waiter: waiter,
 		client: client,
 		server: server,
 	}
 }
 
-func (it *DefaultProxy) Proxy() {
-	go it.streamAndClose(it.client, it.server)
-	go it.streamAndClose(it.server, it.client)
-	it.closeSockets()
+func (this *defaultProxy) Proxy() {
+	go this.streamAndClose(this.client, this.server)
+	go this.streamAndClose(this.server, this.client)
+	this.closeSockets()
 }
 
-func (it *DefaultProxy) streamAndClose(reader, writer Socket) {
-	io.Copy(writer, reader)
+func (this *defaultProxy) streamAndClose(reader, writer socket) {
+	_, _ = io.Copy(writer, reader)
 
 	tryCloseRead(reader)
 	tryCloseWrite(writer)
 
-	it.waiter.Done()
+	this.waiter.Done()
 }
-func tryCloseRead(socket Socket) {
-	if tcp, ok := socket.(TCPSocket); ok {
-		tcp.CloseRead()
+func tryCloseRead(socket socket) {
+	if tcp, ok := socket.(tcpSocket); ok {
+		_ = tcp.CloseRead()
 	}
 }
-func tryCloseWrite(socket Socket) {
-	if tcp, ok := socket.(TCPSocket); ok {
-		tcp.CloseWrite()
+func tryCloseWrite(socket socket) {
+	if tcp, ok := socket.(tcpSocket); ok {
+		_ = tcp.CloseWrite()
 	}
 }
 
-func (it *DefaultProxy) closeSockets() {
-	it.waiter.Wait()
-	it.client.Close()
-	it.server.Close()
+func (this *defaultProxy) closeSockets() {
+	this.waiter.Wait()
+	_ = this.client.Close()
+	_ = this.server.Close()
 }

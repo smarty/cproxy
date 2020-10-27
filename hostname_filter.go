@@ -4,18 +4,18 @@ import (
 	"net/http"
 )
 
-type HostnameFilter struct {
+type hostnameFilter struct {
 	authorized []string
 }
 
-func NewHostnameFilter(authorized []string) *HostnameFilter {
-	return &HostnameFilter{authorized: authorized}
+func NewHostnameFilter(authorized []string) Filter {
+	return &hostnameFilter{authorized: authorized}
 }
 
-func (it HostnameFilter) IsAuthorized(request *http.Request) bool {
+func (this hostnameFilter) IsAuthorized(request *http.Request) bool {
 	host := request.URL.Host
 
-	for _, authorized := range it.authorized {
+	for _, authorized := range this.authorized {
 		if authorized[:2] == "*." {
 			have, want := len(host), len(authorized)-1
 			if have > want && authorized[1:] == host[len(host)-want:] {

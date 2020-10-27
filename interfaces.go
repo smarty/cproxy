@@ -11,45 +11,50 @@ type (
 		IsAuthorized(*http.Request) bool
 	}
 
-	ClientConnector interface {
-		Connect(w http.ResponseWriter) Socket
+	clientConnector interface {
+		Connect(http.ResponseWriter) socket
 	}
 )
 
 type (
-	Dialer interface {
-		Dial(string) Socket
+	dialer interface {
+		Dial(string) socket
 	}
 
-	ServerConnector interface {
-		Connect(Socket, string) Proxy
+	serverConnector interface {
+		Connect(socket, string) proxy
 	}
 
-	Initializer interface {
-		Initialize(Socket, Socket) bool
+	initializer interface {
+		Initialize(socket, socket) bool
 	}
 
-	Proxy interface {
+	proxy interface {
 		Proxy()
 	}
 )
 
 type (
-	Socket interface {
+	socket interface {
 		io.ReadWriteCloser
 		RemoteAddr() net.Addr
 	}
 
-	TCPSocket interface {
-		Socket
+	tcpSocket interface {
+		socket
 		CloseRead() error
 		CloseWrite() error
 	}
 )
 
-type Meter interface {
-	Measure(int)
-}
+type (
+	monitor interface {
+		Measure(int)
+	}
+	logger interface {
+		Printf(string, ...interface{})
+	}
+)
 
 const (
 	MeasurementHTTPRequest int = iota
