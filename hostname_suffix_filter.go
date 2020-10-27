@@ -13,7 +13,7 @@ func NewHostnameSuffixFilter(authorized []string) Filter {
 	return &hostnameSuffixFilter{authorized: authorized}
 }
 
-func (this hostnameSuffixFilter) IsAuthorized(request *http.Request) bool {
+func (this hostnameSuffixFilter) IsAuthorized(_ http.ResponseWriter, request *http.Request) bool {
 	host := request.URL.Host
 
 	for _, authorized := range this.authorized {

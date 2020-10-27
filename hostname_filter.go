@@ -12,7 +12,7 @@ func NewHostnameFilter(authorized []string) Filter {
 	return &hostnameFilter{authorized: authorized}
 }
 
-func (this hostnameFilter) IsAuthorized(request *http.Request) bool {
+func (this hostnameFilter) IsAuthorized(_ http.ResponseWriter, request *http.Request) bool {
 	host := request.URL.Host
 
 	for _, authorized := range this.authorized {

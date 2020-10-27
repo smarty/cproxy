@@ -25,7 +25,7 @@ func (this *defaultHandler) ServeHTTP(response http.ResponseWriter, request *htt
 		this.meter.Measure(MeasurementBadMethod)
 		writeResponseStatus(response, http.StatusMethodNotAllowed)
 
-	} else if !this.filter.IsAuthorized(request) {
+	} else if !this.filter.IsAuthorized(response, request) {
 		this.meter.Measure(MeasurementUnauthorizedRequest)
 		writeResponseStatus(response, http.StatusUnauthorized)
 

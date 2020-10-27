@@ -19,6 +19,6 @@ type FilterFixture struct {
 func (this *FilterFixture) TestAllowEverything() {
 	filter := newFilter()
 
-	this.So(filter.IsAuthorized(nil), should.BeTrue)
-	this.So(filter.IsAuthorized(httptest.NewRequest("GET", "/", nil)), should.BeTrue)
+	this.So(filter.IsAuthorized(nil, nil), should.BeTrue)
+	this.So(filter.IsAuthorized(nil, httptest.NewRequest("GET", "/", nil)), should.BeTrue)
 }

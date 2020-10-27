@@ -36,7 +36,7 @@ func (this *HostnameFilterFixture) TestDenied() {
 
 func (this *HostnameFilterFixture) assertUnauthorized(domain string) {
 	request := httptest.NewRequest("CONNECT", domain, nil)
-	this.So(this.filter.IsAuthorized(request), should.BeFalse)
+	this.So(this.filter.IsAuthorized(nil, request), should.BeFalse)
 }
 
 func (this *HostnameFilterFixture) TestAuthorized() {
@@ -48,5 +48,5 @@ func (this *HostnameFilterFixture) TestAuthorized() {
 
 func (this *HostnameFilterFixture) assertAuthorized(domain string) {
 	request := httptest.NewRequest("CONNECT", domain, nil)
-	this.So(this.filter.IsAuthorized(request), should.BeTrue)
+	this.So(this.filter.IsAuthorized(nil, request), should.BeTrue)
 }

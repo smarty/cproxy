@@ -8,7 +8,7 @@ import (
 
 type (
 	Filter interface {
-		IsAuthorized(*http.Request) bool
+		IsAuthorized(http.ResponseWriter, *http.Request) bool
 	}
 
 	clientConnector interface {

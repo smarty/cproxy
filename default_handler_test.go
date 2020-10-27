@@ -58,6 +58,7 @@ func (this *HandlerFixture) TestsDisallowsUnauthorizedRequests() {
 	this.serveHTTP()
 
 	this.So(this.filter.request, should.Equal, this.request)
+	this.So(this.filter.response, should.Equal, this.response)
 	this.shouldHaveResponse(401, "Unauthorized")
 	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementUnauthorizedRequest})
 }
@@ -107,12 +108,14 @@ func (this *HandlerFixture) shouldHaveResponse(statusCode int, statusText string
 type TestFilter struct {
 	authorized bool
 	request    *http.Request
+	response   http.ResponseWriter
 }
 
 func NewTestFilter(authorized bool) *TestFilter {
 	return &TestFilter{authorized: authorized}
 }
-func (this *TestFilter) IsAuthorized(request *http.Request) bool {
+func (this *TestFilter) IsAuthorized(response http.ResponseWriter, request *http.Request) bool {
+	this.response = response
 	this.request = request
 	return this.authorized
 }
