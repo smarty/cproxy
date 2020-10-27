@@ -19,6 +19,7 @@ type option func(*configuration)
 type configuration struct {
 	DialTimeout     time.Duration
 	Filter          Filter
+	DialAddress     string
 	Dialer          Dialer
 	LogConnections  bool
 	ProxyProtocol   bool
@@ -37,6 +38,9 @@ func (singleton) Filter(value Filter) option {
 }
 func (singleton) ClientConnector(value clientConnector) option {
 	return func(this *configuration) { this.ClientConnector = value }
+}
+func (singleton) DialAddress(value string) option {
+	return func(this *configuration) { this.DialAddress = value }
 }
 func (singleton) Dialer(value Dialer) option {
 	return func(this *configuration) { this.Dialer = value }
@@ -68,6 +72,10 @@ func (singleton) apply(options ...option) option {
 
 		if this.Dialer == nil {
 			this.Dialer = newDialer(this)
+		}
+
+		if len(this.DialAddress) > 0 {
+			this.Dialer = newRoutingDialer(this)
 		}
 
 		if this.Initializer == nil && this.ProxyProtocol {
