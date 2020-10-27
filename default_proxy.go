@@ -6,12 +6,12 @@ import (
 )
 
 type defaultProxy struct {
-	client socket
-	server socket
+	client Socket
+	server Socket
 	waiter *sync.WaitGroup
 }
 
-func newProxy(client, server socket) *defaultProxy {
+func newProxy(client, server Socket) *defaultProxy {
 	waiter := &sync.WaitGroup{}
 	waiter.Add(2) // wait on both client->server and server->client streams
 
@@ -28,7 +28,7 @@ func (this *defaultProxy) Proxy() {
 	this.closeSockets()
 }
 
-func (this *defaultProxy) streamAndClose(reader, writer socket) {
+func (this *defaultProxy) streamAndClose(reader, writer Socket) {
 	_, _ = io.Copy(writer, reader)
 
 	tryCloseRead(reader)
@@ -36,12 +36,12 @@ func (this *defaultProxy) streamAndClose(reader, writer socket) {
 
 	this.waiter.Done()
 }
-func tryCloseRead(socket socket) {
+func tryCloseRead(socket Socket) {
 	if tcp, ok := socket.(tcpSocket); ok {
 		_ = tcp.CloseRead()
 	}
 }
-func tryCloseWrite(socket socket) {
+func tryCloseWrite(socket Socket) {
 	if tcp, ok := socket.(tcpSocket); ok {
 		_ = tcp.CloseWrite()
 	}

@@ -14,7 +14,7 @@ func newDialer(config *configuration) *defaultDialer {
 	return &defaultDialer{timeout: config.DialTimeout, logger: config.Logger}
 }
 
-func (this *defaultDialer) Dial(address string) socket {
+func (this *defaultDialer) Dial(address string) Socket {
 	if socket, err := net.DialTimeout("tcp", address, this.timeout); err == nil {
 		return socket
 	} else {

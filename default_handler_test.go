@@ -123,15 +123,15 @@ func (this *TestFilter) IsAuthorized(response http.ResponseWriter, request *http
 //////////////////////////////////////////////////////////////
 
 type TestClientConnector struct {
-	socket   socket
+	socket   Socket
 	response http.ResponseWriter
 }
 
-func NewTestClientConnector(socket socket) *TestClientConnector {
+func NewTestClientConnector(socket Socket) *TestClientConnector {
 	return &TestClientConnector{socket: socket}
 }
 
-func (this *TestClientConnector) Connect(response http.ResponseWriter) socket {
+func (this *TestClientConnector) Connect(response http.ResponseWriter) Socket {
 	this.response = response
 	return this.socket
 }
@@ -139,7 +139,7 @@ func (this *TestClientConnector) Connect(response http.ResponseWriter) socket {
 //////////////////////////////////////////////////////////////
 
 type TestServerConnector struct {
-	socket  socket
+	socket  Socket
 	address string
 	proxy   *TestProxy
 }
@@ -148,7 +148,7 @@ func NewTestServerConnector() *TestServerConnector {
 	return &TestServerConnector{proxy: &TestProxy{}}
 }
 
-func (this *TestServerConnector) Connect(socket socket, address string) proxy {
+func (this *TestServerConnector) Connect(socket Socket, address string) proxy {
 	this.socket = socket
 	this.address = address
 

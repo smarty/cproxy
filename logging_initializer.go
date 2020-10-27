@@ -13,7 +13,7 @@ func newLoggingInitializer(config *configuration) initializer {
 	return &loggingInitializer{inner: config.Initializer, logger: config.Logger}
 }
 
-func (this *loggingInitializer) Initialize(client, server socket) bool {
+func (this *loggingInitializer) Initialize(client, server Socket) bool {
 	result := this.inner.Initialize(client, server)
 
 	if result {

@@ -71,14 +71,14 @@ func (this *ServerConnectorFixture) connect(address string) proxy {
 
 type TestDialer struct {
 	address string
-	socket  socket
+	socket  Socket
 }
 
-func NewTestDialer(socket socket) *TestDialer {
+func NewTestDialer(socket Socket) *TestDialer {
 	return &TestDialer{socket: socket}
 }
 
-func (this *TestDialer) Dial(address string) socket {
+func (this *TestDialer) Dial(address string) Socket {
 	this.address = address
 	return this.socket
 }
@@ -87,15 +87,15 @@ func (this *TestDialer) Dial(address string) socket {
 
 type TestInitializer struct {
 	success bool
-	client  socket
-	server  socket
+	client  Socket
+	server  Socket
 }
 
 func NewTestInitializer(success bool) *TestInitializer {
 	return &TestInitializer{success: success}
 }
 
-func (this *TestInitializer) Initialize(client, server socket) bool {
+func (this *TestInitializer) Initialize(client, server Socket) bool {
 	this.client = client
 	this.server = server
 	return this.success

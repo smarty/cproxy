@@ -19,7 +19,7 @@ type option func(*configuration)
 type configuration struct {
 	DialTimeout     time.Duration
 	Filter          Filter
-	Dialer          dialer
+	Dialer          Dialer
 	LogConnections  bool
 	ProxyProtocol   bool
 	Initializer     initializer
@@ -38,7 +38,7 @@ func (singleton) Filter(value Filter) option {
 func (singleton) ClientConnector(value clientConnector) option {
 	return func(this *configuration) { this.ClientConnector = value }
 }
-func (singleton) Dialer(value dialer) option {
+func (singleton) Dialer(value Dialer) option {
 	return func(this *configuration) { this.Dialer = value }
 }
 func (singleton) LogConnections(value bool) option {

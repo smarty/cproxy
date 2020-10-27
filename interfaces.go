@@ -12,21 +12,21 @@ type (
 	}
 
 	clientConnector interface {
-		Connect(http.ResponseWriter) socket
+		Connect(http.ResponseWriter) Socket
 	}
 )
 
 type (
-	dialer interface {
-		Dial(string) socket
+	Dialer interface {
+		Dial(string) Socket
 	}
 
 	serverConnector interface {
-		Connect(socket, string) proxy
+		Connect(Socket, string) proxy
 	}
 
 	initializer interface {
-		Initialize(socket, socket) bool
+		Initialize(Socket, Socket) bool
 	}
 
 	proxy interface {
@@ -35,13 +35,13 @@ type (
 )
 
 type (
-	socket interface {
+	Socket interface {
 		io.ReadWriteCloser
 		RemoteAddr() net.Addr
 	}
 
 	tcpSocket interface {
-		socket
+		Socket
 		CloseRead() error
 		CloseWrite() error
 	}

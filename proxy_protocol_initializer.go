@@ -13,7 +13,7 @@ func newProxyProtocolInitializer() *proxyProtocolInitializer {
 	return &proxyProtocolInitializer{}
 }
 
-func (this *proxyProtocolInitializer) Initialize(client, server socket) bool {
+func (this *proxyProtocolInitializer) Initialize(client, server Socket) bool {
 	header := formatHeader(client.RemoteAddr(), server.RemoteAddr())
 	_, err := io.WriteString(server, header)
 	return err == nil
