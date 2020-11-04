@@ -74,9 +74,7 @@ func (singleton) apply(options ...option) option {
 			this.Dialer = newDialer(this)
 		}
 
-		if len(this.DialAddress) > 0 {
-			this.Dialer = newRoutingDialer(this)
-		}
+		this.Dialer = newRoutingDialer(this)
 
 		if this.Initializer == nil && this.ProxyProtocol {
 			this.Initializer = newProxyProtocolInitializer()
