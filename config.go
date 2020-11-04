@@ -76,8 +76,12 @@ func (singleton) apply(options ...option) option {
 
 		this.Dialer = newRoutingDialer(this)
 
-		if this.Initializer == nil && this.ProxyProtocol {
+		if this.ProxyProtocol {
 			this.Initializer = newProxyProtocolInitializer()
+		}
+
+		if this.Initializer == nil {
+			this.Initializer = nop{}
 		}
 
 		this.Initializer = newLoggingInitializer(this)
@@ -91,7 +95,7 @@ func (singleton) defaults(options ...option) []option {
 	const defaultDialTimeout = time.Second * 10
 	var defaultFilter = newFilter()
 	var defaultClientConnector = newClientConnector()
-	var defaultInitializer = newInitializer()
+	var defaultInitializer = nop{}
 	var defaultMonitor = nop{}
 	var defaultLogger = nop{}
 	return append([]option{
@@ -106,5 +110,6 @@ func (singleton) defaults(options ...option) []option {
 
 type nop struct{}
 
-func (nop) Measure(int)                   {}
-func (nop) Printf(string, ...interface{}) {}
+func (nop) Measure(int)                    {}
+func (nop) Printf(string, ...interface{})  {}
+func (nop) Initialize(Socket, Socket) bool { return true }
