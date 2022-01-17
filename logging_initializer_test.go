@@ -53,7 +53,7 @@ func (this *LoggingInitializerFixture) TestLoggingOnFailure() {
 func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {
 	this.initializer.Initialize(this.client, this.server)
 
-	this.So(this.logs, should.Resemble, []string{"[INFO] Established connection [1.2.3.4:4321] -> [5.6.7.8:8765]"})
+	this.So(this.logs, should.BeEmpty)
 }
 
 func (this *LoggingInitializerFixture) Printf(format string, args ...interface{}) {

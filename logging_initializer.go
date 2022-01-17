@@ -16,9 +16,7 @@ func newLoggingInitializer(config *configuration) initializer {
 func (this *loggingInitializer) Initialize(client, server Socket) bool {
 	result := this.inner.Initialize(client, server)
 
-	if result {
-		this.logger.Printf("[INFO] Established connection [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
-	} else {
+	if !result {
 		this.logger.Printf("[INFO] Connection failed [%s] -> [%s]", client.RemoteAddr(), server.RemoteAddr())
 	}
 
