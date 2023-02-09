@@ -33,7 +33,7 @@ func (this *defaultHandler) ServeHTTP(response http.ResponseWriter, request *htt
 		this.meter.Measure(MeasurementClientConnectionFailed)
 		writeResponseStatus(response, http.StatusNotImplemented)
 
-	} else if proxy := this.serverConnector.Connect(client, request.URL.Host); proxy == nil {
+	} else if connection := this.serverConnector.Connect(client, request.URL.Host); connection == nil {
 		this.meter.Measure(MeasurementServerConnectionFailed)
 		_, _ = client.Write(statusBadGateway)
 		_ = client.Close()
@@ -41,7 +41,7 @@ func (this *defaultHandler) ServeHTTP(response http.ResponseWriter, request *htt
 	} else {
 		this.meter.Measure(MeasurementProxyReady)
 		_, _ = client.Write(statusReady)
-		proxy.Proxy()
+		connection.Proxy()
 		this.meter.Measure(MeasurementProxyComplete)
 	}
 }

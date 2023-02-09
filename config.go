@@ -66,8 +66,8 @@ func (singleton) Logger(value logger) option {
 
 func (singleton) apply(options ...option) option {
 	return func(this *configuration) {
-		for _, option := range Options.defaults(options...) {
-			option(this)
+		for _, item := range Options.defaults(options...) {
+			item(this)
 		}
 
 		if this.Dialer == nil {
@@ -92,19 +92,13 @@ func (singleton) apply(options ...option) option {
 	}
 }
 func (singleton) defaults(options ...option) []option {
-	const defaultDialTimeout = time.Second * 10
-	var defaultFilter = newFilter()
-	var defaultClientConnector = newClientConnector()
-	var defaultInitializer = nop{}
-	var defaultMonitor = nop{}
-	var defaultLogger = nop{}
 	return append([]option{
-		Options.DialTimeout(defaultDialTimeout),
-		Options.Filter(defaultFilter),
-		Options.ClientConnector(defaultClientConnector),
-		Options.Initializer(defaultInitializer),
-		Options.Monitor(defaultMonitor),
-		Options.Logger(defaultLogger),
+		Options.DialTimeout(time.Second * 10),
+		Options.Filter(newFilter()),
+		Options.ClientConnector(newClientConnector()),
+		Options.Initializer(nop{}),
+		Options.Monitor(nop{}),
+		Options.Logger(nop{}),
 	}, options...)
 }
 
