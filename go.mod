@@ -1,8 +1,8 @@
-module github.com/smartystreets/cproxy/v2
+module github.com/smarty/cproxy/v2
 
-go 1.17
+go 1.18
 
 require (
-	github.com/smartystreets/assertions v1.2.1
-	github.com/smartystreets/gunit v1.4.3
+	github.com/smarty/assertions v1.15.0
+	github.com/smarty/gunit v1.5.0
 )

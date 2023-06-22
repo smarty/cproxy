@@ -105,5 +105,5 @@ func (singleton) defaults(options ...option) []option {
 type nop struct{}
 
 func (nop) Measure(int)                    {}
-func (nop) Printf(string, ...interface{})  {}
+func (nop) Printf(string, ...any)          {}
 func (nop) Initialize(Socket, Socket) bool { return true }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/smartystreets/assertions/should"
-	"github.com/smartystreets/gunit"
+	"github.com/smarty/assertions/should"
+	"github.com/smarty/gunit"
 )
 
 func TestLoggingInitializerFixture(t *testing.T) {
@@ -56,6 +56,6 @@ func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {
 	this.So(this.logs, should.BeEmpty)
 }
 
-func (this *LoggingInitializerFixture) Printf(format string, args ...interface{}) {
+func (this *LoggingInitializerFixture) Printf(format string, args ...any) {
 	this.logs = append(this.logs, fmt.Sprintf(format, args...))
 }
