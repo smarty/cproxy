@@ -11,13 +11,13 @@ $ go run main.go
 Then, in another terminal window:
 ```
 $ export https_proxy="http://127.0.0.1:8080/"
-$ curl -v https://us-street.api.smartystreets.com/status # any secure URL
+$ curl -v https://us-street.api.smarty.com/status # any secure URL
 ```
 
 Now let's perform a direct connection to the server so we can observe that the TLS/SSL x509 certificate from the previous request and the following request are identical.
 ```
 $ unset https_proxy
-$ curl -v https://us-street.api.smartystreets.com/status
+$ curl -v https://us-street.api.smarty.com/status
 ```
 
 Production Use
