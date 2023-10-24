@@ -1,6 +1,6 @@
 module github.com/smarty/cproxy/v2
 
-go 1.18
+go 1.21
 
 require (
 	github.com/smarty/assertions v1.15.0
