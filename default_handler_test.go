@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/smarty/assertions/should"
@@ -100,7 +101,7 @@ func (this *HandlerFixture) serveHTTP() {
 }
 func (this *HandlerFixture) shouldHaveResponse(statusCode int, statusText string) {
 	this.So(this.response.Code, should.Equal, statusCode)
-	this.So(this.response.Body.String(), should.EqualTrimSpace, statusText)
+	this.So(strings.TrimSpace(this.response.Body.String()), should.Equal, statusText)
 }
 
 //////////////////////////////////////////////////////////////
