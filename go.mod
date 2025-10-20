@@ -1,8 +1,5 @@
 module github.com/smarty/cproxy/v2
 
-go 1.22
+go 1.25
 
-require (
-	github.com/smarty/assertions v1.16.0
-	github.com/smarty/gunit v1.5.1
-)
+require github.com/smarty/gunit v1.6.0

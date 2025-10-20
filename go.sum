@@ -1,4 +1,2 @@
-github.com/smarty/assertions v1.16.0 h1:EvHNkdRA4QHMrn75NZSoUQ/mAUXAYWfatfB01yTCzfY=
-github.com/smarty/assertions v1.16.0/go.mod h1:duaaFdCS0K9dnoM50iyek/eYINOZ64gbh1Xlf6LG7AI=
-github.com/smarty/gunit v1.5.1 h1:eXi+QzhQNPEkDQrQGgmO9AHVU3pBoky2bu3Q/sWMVc0=
-github.com/smarty/gunit v1.5.1/go.mod h1:LlRG6oRFIdAdjCn+6RGumhEoEXt5dqCWyneq/u6+b4c=
+github.com/smarty/gunit v1.6.0 h1:27yDmXz5ydI6bYN0A1ltJvtekRY6H3bQJZz0ifJIeVY=
+github.com/smarty/gunit v1.6.0/go.mod h1:4kEWyZ1xFTEwkEfCpjmIRejP9CHn2Q9F4NP6SmAR+fg=

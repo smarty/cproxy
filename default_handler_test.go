@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/smarty/assertions/should"
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestHandlerFixture(t *testing.T) {
@@ -50,7 +50,7 @@ func (this *HandlerFixture) TestForbidsUnknownMethods() {
 	this.serveHTTP()
 
 	this.shouldHaveResponse(405, "Method Not Allowed")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementBadMethod})
+	this.So(this.meter.calls, should.Equal, []int{MeasurementHTTPRequest, MeasurementBadMethod})
 }
 
 func (this *HandlerFixture) TestsDisallowsUnauthorizedRequests() {
@@ -61,7 +61,7 @@ func (this *HandlerFixture) TestsDisallowsUnauthorizedRequests() {
 	this.So(this.filter.request, should.Equal, this.request)
 	this.So(this.filter.response, should.Equal, this.response)
 	this.shouldHaveResponse(401, "Unauthorized")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementUnauthorizedRequest})
+	this.So(this.meter.calls, should.Equal, []int{MeasurementHTTPRequest, MeasurementUnauthorizedRequest})
 }
 
 func (this *HandlerFixture) TestRejectClientWhichCannotBeConnected() {
@@ -71,7 +71,7 @@ func (this *HandlerFixture) TestRejectClientWhichCannotBeConnected() {
 
 	this.So(this.clientConnector.response, should.Equal, this.response)
 	this.shouldHaveResponse(501, "Not Implemented")
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementClientConnectionFailed})
+	this.So(this.meter.calls, should.Equal, []int{MeasurementHTTPRequest, MeasurementClientConnectionFailed})
 }
 
 func (this *HandlerFixture) TestRejectBadGatewayRequest() {
@@ -84,7 +84,7 @@ func (this *HandlerFixture) TestRejectBadGatewayRequest() {
 	this.So(this.socket.String(), should.Equal, "HTTP/1.1 502 Bad Gateway\r\n\r\n")
 	this.So(this.socket.closed, should.Equal, 1)
 	this.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementServerConnectionFailed})
+	this.So(this.meter.calls, should.Equal, []int{MeasurementHTTPRequest, MeasurementServerConnectionFailed})
 }
 
 func (this *HandlerFixture) TestProxyInvoked() {
@@ -93,7 +93,7 @@ func (this *HandlerFixture) TestProxyInvoked() {
 	this.So(this.socket.String(), should.Equal, "HTTP/1.1 200 OK\r\n\r\n")
 	this.So(this.serverConnector.proxy.calls, should.Equal, 1)
 	this.shouldHaveResponse(200, "") // ResponseRecorder defaults to 200
-	this.So(this.meter.calls, should.Resemble, []int{MeasurementHTTPRequest, MeasurementProxyReady, MeasurementProxyComplete})
+	this.So(this.meter.calls, should.Equal, []int{MeasurementHTTPRequest, MeasurementProxyReady, MeasurementProxyComplete})
 }
 
 func (this *HandlerFixture) serveHTTP() {

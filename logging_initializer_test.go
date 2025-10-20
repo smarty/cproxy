@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/smarty/assertions/should"
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestLoggingInitializerFixture(t *testing.T) {
@@ -47,7 +47,7 @@ func (this *LoggingInitializerFixture) TestLoggingOnFailure() {
 
 	this.initializer.Initialize(this.client, this.server)
 
-	this.So(this.logs, should.Resemble, []string{"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]"})
+	this.So(this.logs, should.Equal, []string{"[INFO] Connection failed [1.2.3.4:4321] -> [5.6.7.8:8765]"})
 }
 
 func (this *LoggingInitializerFixture) TestLoggingOnSuccess() {

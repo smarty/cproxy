@@ -3,8 +3,8 @@ package cproxy
 import (
 	"testing"
 
-	"github.com/smarty/assertions/should"
 	"github.com/smarty/gunit"
+	"github.com/smarty/gunit/assert/should"
 )
 
 func TestServerConnectorFixture(t *testing.T) {
